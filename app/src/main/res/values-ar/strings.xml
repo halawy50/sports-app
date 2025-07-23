@@ -1,0 +1,99 @@
+<resources>
+    <string name="app_name">هل من منافس</string>
+    <string name="onboarding_title1">استكشف الفرق من حولك</string>
+    <string name="onboarding_description1">تصفح الفرق القريبة، وتعرّف على أعضائها ومستوياتهم ونشاطاتهم — لتختار من يناسبك للتحدي.</string>
+
+    <string name="onboarding_title2">أضف تحديًا لفريقك</string>
+    <string name="onboarding_description2">فريقك جاهز؟ أنشئ منشورًا وأعلن التحدي، ودع الفرق تتواصل معكم!</string>
+
+    <string name="onboarding_title3">نظّم مباريات وتواصل بسهولة</string>
+    <string name="onboarding_description3">حدّد موعدًا، اختر المكان، وتواصل مع الفريق المنافس داخل التطبيق.</string>
+    <string name="next">التالي</string>
+    <string name="finish">ابدأ</string>
+    <string name="previous">السابق</string>
+    <string name="herader_welcome">مرحبًا بك في ملعبك الرقمي</string>
+    <string name="paragraph_welcome">أرسل تحديات وتواصل مع فرق كرة القدم حولك. ابدأ رحلتك الكروية الآن</string>
+    <string name="email">البريد الاليكتروني</string>
+    <string name="password">كلمة المرور</string>
+    <string name="signIn">تسجيل الدخول</string>
+    <string name="signup">انشأ حساب جديد</string>
+    <string name="forget_password">هل نسيت كلمة السر؟</string>
+    <string name="logo">Logo</string>
+    <string name="header_sign_up">أنشئ حسابك وادخل عالم المنافسات</string>
+    <string name="paragraph_signup">تواصل مع الفرق، نظّم مباريات، وابدأ رحلتك في كرة القدم الآن</string>
+    <string name="full_name">الاسم بالكامل</string>
+    <string name="male">ذكر</string>
+    <string name="female">انثي</string>
+    <string name="gender">النوع</string>
+    <string name="city">المحافظة</string>
+
+    <string name="city_cairo">القاهرة</string>
+    <string name="city_giza">الجيزة</string>
+    <string name="city_alexandria">الإسكندرية</string>
+    <string name="city_mansoura">المنصورة</string>
+    <string name="city_tanta">طنطا</string>
+    <string name="city_monufia">المنوفية</string>
+    <string name="city_sharqia">الشرقية</string>
+    <string name="city_dakahlia">الدقهلية</string>
+    <string name="city_gharbia">الغربية</string>
+    <string name="city_kafr_sheikh">كفر الشيخ</string>
+    <string name="city_damietta">دمياط</string>
+    <string name="city_portsaid">بورسعيد</string>
+    <string name="city_ismailia">الإسماعيلية</string>
+    <string name="city_suez">السويس</string>
+    <string name="city_beheira">البحيرة</string>
+    <string name="city_matrouh">مطروح</string>
+    <string name="city_fayoum">الفيوم</string>
+    <string name="city_beni_suef">بني سويف</string>
+    <string name="city_minya">المنيا</string>
+    <string name="city_assiut">أسيوط</string>
+    <string name="city_sohag">سوهاج</string>
+    <string name="city_qena">قنا</string>
+    <string name="city_luxor">الأقصر</string>
+    <string name="city_aswan">أسوان</string>
+    <string name="city_new_valley">الوادي الجديد</string>
+    <string name="city_north_sinai">شمال سيناء</string>
+    <string name="city_south_sinai">جنوب سيناء</string>
+    <string name="city_red_sea">البحر الأحمر</string>
+    <string name="age">العمر</string>
+    <string name="already_have_account">لدي حساب بالفعل</string>
+    <string name="pagrapgh_forget_password">أدخل البريد الاليكتروني المرتبط بحسابك، وسنرسل لك رمز تحقق لإعادة تعيين كلمة المرور.</string>
+    <string name="send_otp">أرسل رمز التحقق</string>
+    <string name="back_to_sign_in">العودة لتسجيل الدخول</string>
+    <string name="header_verify_otp">أدخل كود التفعيل</string>
+    <string name="paragraph_verify_otp">تم إرسال رمز مكون من 6 أرقام إلى بريدك الاليكتروني: \n</string>
+    <string name="otp_code">رمز التحقق</string>
+    <string name="verify_code">تأكيد الكود</string>
+    <string name="back">رجوع</string>
+    <string name="message_timer">يمكنك إعادة إرسال الرمز بعد %1$s ثانية</string>
+    <string name="resend_code">إعادة إرسال الرمز</string>
+    <string name="header_new_password">كلمة مرور جديد</string>
+    <string name="pargraph_new_password">"ادخل كلمة مرور جديدة وقوية "</string>
+    <string name="new_password">كلمة مرور جديد</string>
+    <string name="re_new_password">اعد كلمة المرور</string>
+    <string name="change_password">تغيير كلمة السر</string>
+    <string name="input_full_name">أدخل الاسم بالكامل</string>
+
+
+    <string name="error_empty_full_name">يرجى إدخال الاسم الكامل</string>
+    <string name="error_short_full_name">الاسم قصير جداً</string>
+
+    <string name="error_empty_age">أدخل عمرك</string>
+    <string name="error_underage">يجب أن يكون عمرك أكبر من 16 سنة</string>
+    <string name="error_invalid_age">العمر غير صالح</string>
+
+    <string name="error_empty_gender">اختر الجنس</string>
+    <string name="error_empty_city">اختر المدينة</string>
+
+    <string name="error_empty_email">برجاء إدخال البريد الإلكتروني</string>
+    <string name="error_invalid_email">البريد الإلكتروني غير صالح</string>
+
+    <string name="error_empty_password">أدخل كلمة السر</string>
+    <string name="error_short_password">كلمة السر يجب أن تكون 8 أحرف على الأقل</string>
+    <string name="error_weak_password">كلمة السر ضعيفة - استخدم أحرف وأرقام</string>
+
+    <string name="loading_creating_account">جاري إنشاء الحساب</string>
+    <string name="success_registration">تم التسجيل بنجاح</string>
+
+
+</resources>

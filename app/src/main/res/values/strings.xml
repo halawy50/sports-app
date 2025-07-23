@@ -1,0 +1,96 @@
+<resources>
+    <string name="app_name">Any Challenger?</string>
+    <string name="onboarding_title1">Explore Teams Around You</string>
+    <string name="onboarding_description1">Browse nearby teams, meet their members, levels, and activities — choose who to challenge.</string>
+
+    <string name="onboarding_title2">Add a Challenge for Your Team</string>
+    <string name="onboarding_description2">Is your team ready? Create a post, announce the challenge, and let other teams reach out!</string>
+
+    <string name="onboarding_title3">Organize Matches &amp; Communicate Easily</string>
+    <string name="onboarding_description3">Set a date, choose the location, and communicate with the rival team within the app.</string>
+    <string name="next">Next</string>
+    <string name="finish">Start</string>
+    <string name="previous">Previous</string>
+    <string name="herader_welcome">Welcome to Your Digital Playground</string>
+    <string name="paragraph_welcome">Send challenges and connect with football teams around you. Start your football journey now.</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="signIn">Sign In</string>
+    <string name="signup">Create a New Account</string>
+    <string name="forget_password">Forgot Password?</string>
+    <string name="logo">Logo</string>
+    <string name="header_sign_up">Create Your Account &amp; Enter the World of Challenges</string>
+    <string name="paragraph_signup">Connect with teams, organize matches, and begin your football journey now.</string>
+    <string name="full_name">Full Name</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="gender">Gender</string>
+    <string name="city">City</string>
+
+    <string name="city_cairo">Cairo</string>
+    <string name="city_giza">Giza</string>
+    <string name="city_alexandria">Alexandria</string>
+    <string name="city_mansoura">Mansoura</string>
+    <string name="city_tanta">Tanta</string>
+    <string name="city_monufia">Monufia</string>
+    <string name="city_sharqia">Sharqia</string>
+    <string name="city_dakahlia">Dakahlia</string>
+    <string name="city_gharbia">Gharbia</string>
+    <string name="city_kafr_sheikh">Kafr El-Sheikh</string>
+    <string name="city_damietta">Damietta</string>
+    <string name="city_portsaid">Port Said</string>
+    <string name="city_ismailia">Ismailia</string>
+    <string name="city_suez">Suez</string>
+    <string name="city_beheira">Beheira</string>
+    <string name="city_matrouh">Matrouh</string>
+    <string name="city_fayoum">Fayoum</string>
+    <string name="city_beni_suef">Beni Suef</string>
+    <string name="city_minya">Minya</string>
+    <string name="city_assiut">Assiut</string>
+    <string name="city_sohag">Sohag</string>
+    <string name="city_qena">Qena</string>
+    <string name="city_luxor">Luxor</string>
+    <string name="city_aswan">Aswan</string>
+    <string name="city_new_valley">New Valley</string>
+    <string name="city_north_sinai">North Sinai</string>
+    <string name="city_south_sinai">South Sinai</string>
+    <string name="city_red_sea">Red Sea</string>
+    <string name="age">Age</string>
+    <string name="already_have_account">Already have an account</string>
+    <string name="pagrapgh_forget_password">Enter the email address linked to your account, and we’ll send you a verification code to reset your password.</string>
+    <string name="send_otp">Send Verification Code</string>
+    <string name="back_to_sign_in">Back to Sign In</string>
+    <string name="header_verify_otp">Enter Verification Code</string>
+    <string name="paragraph_verify_otp">A 6-digit code has been sent to your email:\n</string>
+    <string name="otp_code">Verification Code</string>
+    <string name="verify_code">Verify Code</string>
+    <string name="back">Back</string>
+    <string name="message_timer">You can resend the code in %1$s seconds</string>
+    <string name="resend_code">Resend Code</string>
+    <string name="header_new_password">New Password</string>
+    <string name="pargraph_new_password">Enter a new and strong password</string>
+    <string name="new_password">New Password</string>
+    <string name="re_new_password">Confirm Password</string>
+    <string name="change_password">Change Password</string>
+    <string name="input_full_name">Enter Full Name</string>
+
+    <string name="error_empty_full_name">Please enter your full name</string>
+    <string name="error_short_full_name">Name is too short</string>
+
+    <string name="error_empty_age">Please enter your age</string>
+    <string name="error_underage">You must be over 16 years old</string>
+    <string name="error_invalid_age">Invalid age</string>
+
+    <string name="error_empty_gender">Please select gender</string>
+    <string name="error_empty_city">Please select a city</string>
+
+    <string name="error_empty_email">Please enter your email</string>
+    <string name="error_invalid_email">Invalid email address</string>
+
+    <string name="error_empty_password">Enter password</string>
+    <string name="error_short_password">Password must be at least 8 characters</string>
+    <string name="error_weak_password">Weak password - use letters and numbers</string>
+
+    <string name="loading_creating_account">Creating account...</string>
+    <string name="success_registration">Registration successful</string>
+</resources>
