@@ -5,27 +5,21 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHost
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myapplication.presentation.components.HideStatusBar
-import com.example.myapplication.presentation.constant.Routes
-import com.example.myapplication.presentation.constant.RoutesAuth
+import com.example.myapplication.presentation.constant.routes.RoutesAuth
 import com.example.myapplication.presentation.screens.authScreen.forgetPasswordPage.ForgetPasswordPage
 import com.example.myapplication.presentation.screens.authScreen.loginPage.LoginPage
-import com.example.myapplication.presentation.screens.authScreen.newPasswordPage.NewForgetPasswordPage
+import com.example.myapplication.presentation.screens.authScreen.newPasswordPage.ResetPasswordPage
 import com.example.myapplication.presentation.screens.authScreen.signUpPage.SignUpPage
 import com.example.myapplication.presentation.screens.authScreen.verfiyOtp.VerifyOTPPage
-import com.example.myapplication.presentation.screens.splashScreen.SplashScreen
 
 @Composable
 fun AuthNavController(appNavController: NavController , activity: Activity , padding: PaddingValues){
@@ -71,8 +65,23 @@ fun AuthNavController(appNavController: NavController , activity: Activity , pad
         }
 
         //NewPassword Page
-        composable(RoutesAuth.newPasswordPage){
-            NewForgetPasswordPage(appNavController = appNavController , authNavController = authNavController)
+        composable(
+            RoutesAuth.newPasswordPage,
+            arguments = listOf(
+                navArgument("email") { type = NavType.StringType},
+                navArgument("otp") { type = NavType.StringType},
+            )
+        ){backStackEntry ->
+
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            val otp = backStackEntry.arguments?.getString("otp") ?: ""
+
+            ResetPasswordPage(
+                appNavController = appNavController ,
+                authNavController = authNavController,
+                email = email,
+                otp = otp
+                )
         }
 
     }

@@ -94,6 +94,23 @@
 
     <string name="loading_creating_account">جاري إنشاء الحساب</string>
     <string name="success_registration">تم التسجيل بنجاح</string>
+    <string name="loading_login">جاري تسجيل الدخول...</string>
+    <string name="account_created_success">تم إنشاء الحساب بنجاح، سيتم نقلك إلى صفحة تسجيل الدخول</string>
+    <string name="sending_otp">جاري إرسال الرمز</string>
+
+    <string name="error_empty_otp">برجاء إدخال الرمز</string>
+    <string name="error_short_otp">يرجى إدخال الرمز كاملًا</string>
+
+    <string name="loading_verify_code">جاري التأكد من الرمز...</string>
+
+    <string name="otp_verified_success">تم تأكيد الرمز، وسيتم الانتقال لصفحة إعادة تعيين كلمة المرور.</string>
+
+    <string name="error_passwords_not_match">كلمتا المرور غير متطابقتين</string>
+
+    <string name="reset_password_loading">برجاء الانتظار...</string>
+    <string name="reset_password_success">تم تغيير كلمة المرور وسيتم نقلك تلقائيًا لصفحة تسجيل الدخول</string>
+
+    <string name="choose_language">اختر اللغة</string>
 
 
 </resources>

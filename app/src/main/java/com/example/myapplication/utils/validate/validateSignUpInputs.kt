@@ -1,4 +1,4 @@
-package com.example.myapplication.presentation.constant
+package com.example.myapplication.utils.validate
 
 import android.content.Context
 import com.example.myapplication.R

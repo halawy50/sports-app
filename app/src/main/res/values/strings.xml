@@ -93,4 +93,22 @@
 
     <string name="loading_creating_account">Creating account...</string>
     <string name="success_registration">Registration successful</string>
+    <string name="account_created_success">Account created successfully. You will be redirected to the login page.</string>
+    <string name="loading_login">Logging in...</string>
+    <string name="sending_otp">Sending code...</string>
+
+    <string name="error_empty_otp">Please enter the code</string>
+    <string name="error_short_otp">Please enter the complete code</string>
+
+    <string name="loading_verify_code">Verifying the code...</string>
+
+    <string name="otp_verified_success">The code has been verified. You will be redirected to reset your password.</string>
+
+    <string name="error_passwords_not_match">Passwords do not match</string>
+
+    <string name="reset_password_loading">Please wait...</string>
+    <string name="reset_password_success">Password changed successfully. You will be redirected to the login page.</string>
+
+    <string name="choose_language">Choose Language</string>
+
 </resources>

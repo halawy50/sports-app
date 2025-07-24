@@ -1,8 +1,9 @@
-package com.example.myapplication.presentation.constant
+package com.example.myapplication.presentation.constant.routes
 
 object Routes {
     val splashScreen = "SplashScreen"
     val onBoardingScreen = "OnBoardingScreen"
+    val changeLanguageScreen = "ChangeLanguageScreen"
     val authScreen = "AuthScreen"
     val homeScreen = "Main/HomeScreen"
     val MessageScreen = "Main/MessageScreen"

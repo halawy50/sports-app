@@ -1,7 +1,5 @@
 package com.example.myapplication.presentation.screens.splashScreen
 
-import android.os.Build
-import android.window.SplashScreen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.scaleIn
@@ -29,23 +27,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
 import com.example.myapplication.MainActivity
 import com.example.myapplication.R
 import com.example.myapplication.presentation.components.HideStatusBar
-import com.example.myapplication.presentation.constant.Routes
-import com.example.myapplication.ui.theme.almarai_bold
+import com.example.myapplication.presentation.constant.routes.Routes
 import com.example.myapplication.ui.theme.almarai_extrabold
 import com.example.myapplication.ui.theme.black
 import com.example.myapplication.ui.theme.blue
-import kotlinx.coroutines.Delay
 import kotlinx.coroutines.delay
-import java.util.Timer
 
 @Composable
 fun SplashScreen(activity: MainActivity , navController: NavController){
@@ -66,7 +56,7 @@ fun SplashScreen(activity: MainActivity , navController: NavController){
         delay(500)
         visableCirclerProgress = true
         delay(3000)
-        navController.navigate(Routes.onBoardingScreen){
+        navController.navigate(Routes.changeLanguageScreen){
             popUpTo(Routes.splashScreen){inclusive = true}
         }
     }

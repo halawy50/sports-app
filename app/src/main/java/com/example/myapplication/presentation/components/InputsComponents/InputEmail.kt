@@ -1,7 +1,10 @@
 package com.example.myapplication.presentation.components.InputsComponents
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -55,6 +58,7 @@ fun InputEmail(
         singleLine = true,
         modifier = Modifier
             .fillMaxWidth()
+
             .onFocusChanged { focusState ->
                 isFocused = focusState.isFocused
             },

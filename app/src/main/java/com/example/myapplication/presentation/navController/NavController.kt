@@ -8,9 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.MainActivity
-import com.example.myapplication.presentation.constant.Routes
-import com.example.myapplication.presentation.screens.authScreen.loginPage.LoginPage
+import com.example.myapplication.presentation.constant.routes.Routes
 import com.example.myapplication.presentation.screens.onBoardingScreen.OnBoardingScreen
+import com.example.myapplication.presentation.screens.splashScreen.ChangeLanguageScreen
 import com.example.myapplication.presentation.screens.splashScreen.SplashScreen
 
 @SuppressLint("SuspiciousIndentation")
@@ -30,6 +30,11 @@ fun NavController(activity: MainActivity , padding: PaddingValues){
             //OnBoardingScreen
             composable(Routes.onBoardingScreen){
                 OnBoardingScreen(activity = activity ,navController = navController , padding = padding)
+            }
+
+            //changeLanguageScreen
+            composable(Routes.changeLanguageScreen){
+                ChangeLanguageScreen(navController= navController,activity = activity, padding = padding)
             }
 
             //AuthScreen

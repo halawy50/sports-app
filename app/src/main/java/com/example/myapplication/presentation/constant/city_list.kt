@@ -2,15 +2,10 @@ package com.example.myapplication.presentation.constant
 
 import android.content.Context
 import com.example.myapplication.domain.model.EntryModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import com.example.myapplication.R
 
 
-class CitiesConstant @Inject constructor(
-    @ApplicationContext private val context: Context
-) {
-    val list = listOf<EntryModel>(
+fun cityList(context: Context) = listOf<EntryModel>(
         EntryModel(0, context.getString(R.string.city_cairo)),
         EntryModel(1, context.getString(R.string.city_giza)),
         EntryModel(2, context.getString(R.string.city_alexandria)),
@@ -38,6 +33,5 @@ class CitiesConstant @Inject constructor(
         EntryModel(24, context.getString(R.string.city_new_valley)),
         EntryModel(25, context.getString(R.string.city_north_sinai)),
         EntryModel(26, context.getString(R.string.city_south_sinai)),
-        EntryModel(27, context.getString(R.string.city_red_sea))
-    )
-}
+        EntryModel(27, context.getString(R.string.city_red_sea)))
+

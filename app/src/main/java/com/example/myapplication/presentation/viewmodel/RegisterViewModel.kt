@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.domain.model.register_model.RegisterRequest
 import com.example.myapplication.domain.model.register_model.RegisterResponse
-import com.example.myapplication.domain.repository.AuthRepository
+import com.example.myapplication.domain.repository.RegisterRepository
+import com.example.myapplication.domain.useCase.RegisterUseCase
 import com.example.myapplication.utils.StateRegister
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(private val authRepository: AuthRepository): ViewModel() {
+class RegisterViewModel @Inject constructor(private val registerUseCase: RegisterUseCase): ViewModel() {
     private val _state = MutableStateFlow<StateRegister>(StateRegister.Idle)
     val state: StateFlow<StateRegister> = _state
 
@@ -27,7 +28,7 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
             try {
                 _state.value = StateRegister.Loading
 
-                val result = authRepository.register(registerRequest)
+                val result = registerUseCase(registerRequest)
 
                 if (result.isSuccessful && result.body() != null) {
                     _state.value = StateRegister.Success(result.body()!!)

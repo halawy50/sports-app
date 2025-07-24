@@ -10,17 +10,21 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.example.myapplication.presentation.components.HideStatusBar
 import com.example.myapplication.presentation.components.ItemOnBoarding
-import com.example.myapplication.presentation.constant.Routes
-import com.example.myapplication.presentation.viewmodel.ConstantDataViewModel
+import com.example.myapplication.presentation.constant.routes.Routes
+import com.example.myapplication.presentation.constant.onBoardingList
 
 @Composable
-fun OnBoardingScreen(activity: Activity, navController: NavController , padding: PaddingValues, constantDataViewModel: ConstantDataViewModel = hiltViewModel()){
+fun OnBoardingScreen(activity: Activity, navController: NavController , padding: PaddingValues){
 
-    val state = rememberPagerState{constantDataViewModel.onBoardingList.size}
+    val context = LocalContext.current
+
+    val onBoardingList = onBoardingList(context)
+
+    val state = rememberPagerState{onBoardingList.size}
 
     HideStatusBar(activity, textIsDark = false)
 
@@ -32,7 +36,7 @@ fun OnBoardingScreen(activity: Activity, navController: NavController , padding:
         HorizontalPager(state , modifier = Modifier.fillMaxSize()){ currentPage ->
             val isFinish = currentPage == state.pageCount - 1
             ItemOnBoarding(
-                constantDataViewModel.onBoardingList[currentPage],
+                onBoardingList[currentPage],
                 isFinish = isFinish,
                 pagerState = state,
                 padding = padding,

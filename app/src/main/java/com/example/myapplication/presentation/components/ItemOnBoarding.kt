@@ -95,7 +95,7 @@ fun ItemOnBoarding(
                             }
                         },
 
-                        text = if (isFinish) {
+                        label = if (isFinish) {
                             stringResource(R.string.finish)
                         } else {
                             stringResource(R.string.next)

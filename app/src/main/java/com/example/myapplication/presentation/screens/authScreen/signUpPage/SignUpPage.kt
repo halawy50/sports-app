@@ -1,20 +1,16 @@
 package com.example.myapplication.presentation.screens.authScreen.signUpPage
 
-import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,26 +42,27 @@ import com.example.myapplication.presentation.components.InputsComponents.InputN
 import com.example.myapplication.presentation.components.InputsComponents.InputPassword
 import com.example.myapplication.presentation.components.InputsComponents.InputText
 import com.example.myapplication.presentation.components.ParagraphText
+import com.example.myapplication.presentation.components.SnackBar
 import com.example.myapplication.presentation.constant.ChangeLanguage
-import com.example.myapplication.presentation.constant.validateSignUpInputs
-import com.example.myapplication.presentation.viewmodel.AuthViewModel
-import com.example.myapplication.presentation.viewmodel.ConstantDataViewModel
-import com.example.myapplication.ui.theme.black
-import com.example.myapplication.ui.theme.white
+import com.example.myapplication.presentation.constant.routes.RoutesAuth
+import com.example.myapplication.presentation.constant.cityList
+import com.example.myapplication.presentation.constant.genderList
+import com.example.myapplication.utils.validate.validateSignUpInputs
+import com.example.myapplication.presentation.viewmodel.RegisterViewModel
 import com.example.myapplication.utils.StateRegister
-import kotlinx.coroutines.delay
 
 @Composable
 fun SignUpPage(
     authNavController: NavController,
     appNavController: NavController,
-    constantDataViewModel: ConstantDataViewModel = hiltViewModel(),
-    authViewModel: AuthViewModel = hiltViewModel()
+    registerViewModel: RegisterViewModel = hiltViewModel()
 ) {
-    val scrollState = rememberScrollState()
-
-    val stateSignUp by authViewModel.state.collectAsState()
     val context = LocalContext.current
+
+    val genderList = genderList(context)
+    val cityList = cityList(context)
+    val scrollState = rememberScrollState()
+    val stateSignUp by registerViewModel.state.collectAsState()
     // Input states
     var mutableFullName by remember { mutableStateOf("") }
     var mutableAge by remember { mutableIntStateOf(0) }
@@ -86,7 +83,10 @@ fun SignUpPage(
     val snackbarHostState = remember { SnackbarHostState() }
 
 
+    var isProgress by remember { mutableStateOf(false) }
+    BackHandler(enabled = isProgress) {
 
+    }
     Box(modifier = Modifier.fillMaxSize()){
 
         Column(
@@ -125,7 +125,7 @@ fun SignUpPage(
 
             // DropDown Select Gender
             DropDawnSelect(
-                list = constantDataViewModel.genderList,
+                list = genderList,
                 getSelected = { gender ->
                     mutableGender = Gender(index = gender.index, gender = gender.title)
                     // Clear error when user selects
@@ -140,7 +140,7 @@ fun SignUpPage(
 
             // DropDown Select Cities
             DropDawnSelect(
-                list = constantDataViewModel.citiesList,
+                list = cityList,
                 getSelected = { city ->
                     mutableCity = City(index = city.index, city = city.title)
                     // Clear error when user selects
@@ -216,10 +216,10 @@ fun SignUpPage(
                     )
 
                     request?.let {
-                        authViewModel.register(it)
+                        registerViewModel.register(it)
                     }
                 },
-                text = stringResource(R.string.signup)
+                label = stringResource(R.string.signup)
             )
 
 
@@ -237,24 +237,35 @@ fun SignUpPage(
         //State Register
         when (val state = stateSignUp) {
 
+
             //Loading
             is StateRegister.Loading -> {
+                isProgress = true
                 LoadingDialog(stringResource(R.string.loading_creating_account))
             }
 
             //Success Register
             is StateRegister.Success -> {
-
+                LoadingDialog(stringResource(R.string.account_created_success))
                 LaunchedEffect(Unit) {
+
                     snackbarHostState.showSnackbar(
                         if (ChangeLanguage.getSavedLanguage(context)=="ar") state.data.messageAr
                         else state.data.messageEn
                     )
-                    authViewModel.resetState()
+
+                    authNavController.navigate(RoutesAuth.loginPage){
+                        popUpTo(RoutesAuth.signUpPage){inclusive = true}
+                        registerViewModel.resetState()
+                    }
+
+
                 }
+                isProgress = false
+
             }
 
-            //Success Failure Register
+            //Failure Register
             is StateRegister.Failure -> {
 
                 LaunchedEffect(state) {
@@ -262,29 +273,17 @@ fun SignUpPage(
                         if (ChangeLanguage.getSavedLanguage(context)=="ar") state.data.messageAr
                         else state.data.messageEn
                     )
-                    authViewModel.resetState()
+                    registerViewModel.resetState()
                 }
+                isProgress = false
+
             }
 
             else -> {}
         }
 
+        SnackBar(snackBarHostState = snackbarHostState , modifier = Modifier.align(Alignment.BottomCenter))
 
-        //SnackBar
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier.align(Alignment.BottomCenter),
-            snackbar = { data ->
-                Snackbar(
-                    snackbarData = data,
-                    containerColor = black,  // لون الخلفية
-                    contentColor = white,         // لون النص
-                    shape = RoundedCornerShape(10.dp),  // شكل الزوايا
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
-        )
 
     }
 
