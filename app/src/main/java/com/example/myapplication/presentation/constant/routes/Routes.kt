@@ -5,6 +5,5 @@ object Routes {
     val onBoardingScreen = "OnBoardingScreen"
     val changeLanguageScreen = "ChangeLanguageScreen"
     val authScreen = "AuthScreen"
-    val homeScreen = "Main/HomeScreen"
-    val MessageScreen = "Main/MessageScreen"
+    val mainScreen = "MainScreen"
 }

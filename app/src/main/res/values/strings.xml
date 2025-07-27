@@ -111,4 +111,14 @@
 
     <string name="choose_language">Choose Language</string>
 
+    <string name="login_success_message">You have successfully logged in. You will be redirected to the home page.</string>
+    <string name="home_label">Home</string>
+    <string name="message_label">Messages</string>
+    <string name="setting_label">Setting</string>
+
+    <string name="intro_paragraph">Find nearby teams, create a challenge, or join a match... ⚽</string>
+    <string name="filter">Filter</string>
+    <string name="empty_challenge">No challenges available right now</string>
+    <string name="add_new_challenge">Add New Challenge</string>
+
 </resources>

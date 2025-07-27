@@ -112,5 +112,14 @@
 
     <string name="choose_language">اختر اللغة</string>
 
+    <string name="login_success_message">تم تسجيل دخولك بنجاح وسيتم نقلك للصفحة الرئيسية</string>
+    <string name="home_label">الرئيسية</string>
+    <string name="message_label">المحادثات</string>
+    <string name="setting_label">الاعدادات</string>
+
+    <string name="intro_paragraph">ابحث عن فرق قريبة، أنشئ تحدي، أو انضم إلى مباراة... ⚽</string>
+    <string name="filter">فلتر</string>
+    <string name="empty_challenge">لا يوجد أي تحدي في الوقت الحالي</string>
+    <string name="add_new_challenge">اضف تحدي جديد</string>
 
 </resources>

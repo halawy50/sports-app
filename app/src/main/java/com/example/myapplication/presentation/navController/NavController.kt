@@ -9,8 +9,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.MainActivity
 import com.example.myapplication.presentation.constant.routes.Routes
+import com.example.myapplication.presentation.screens.main.MainScreen
+//import com.example.myapplication.presentation.screens.main.homeScreen.MainScreen
 import com.example.myapplication.presentation.screens.onBoardingScreen.OnBoardingScreen
-import com.example.myapplication.presentation.screens.splashScreen.ChangeLanguageScreen
+import com.example.myapplication.presentation.screens.changeLanguageScreen.ChangeLanguageScreen
 import com.example.myapplication.presentation.screens.splashScreen.SplashScreen
 
 @SuppressLint("SuspiciousIndentation")
@@ -20,16 +22,11 @@ fun NavController(activity: MainActivity , padding: PaddingValues){
 
         NavHost(
             navController = navController,
-            startDestination = Routes.splashScreen,
+            startDestination = Routes.mainScreen,
         ){
             //SplashScreen
             composable(Routes.splashScreen){
                 SplashScreen(activity = activity, navController = navController)
-            }
-
-            //OnBoardingScreen
-            composable(Routes.onBoardingScreen){
-                OnBoardingScreen(activity = activity ,navController = navController , padding = padding)
             }
 
             //changeLanguageScreen
@@ -37,9 +34,21 @@ fun NavController(activity: MainActivity , padding: PaddingValues){
                 ChangeLanguageScreen(navController= navController,activity = activity, padding = padding)
             }
 
+
+            //OnBoardingScreen
+            composable(Routes.onBoardingScreen){
+                OnBoardingScreen(activity = activity ,navController = navController , padding = padding)
+            }
+
+
             //AuthScreen
             composable(Routes.authScreen){
                 AuthNavController(activity = activity , appNavController = navController , padding = padding)
+            }
+
+            //Main Screen
+            composable(Routes.mainScreen){
+                MainScreen(activity = activity)
             }
 
         }

@@ -1,5 +1,7 @@
 package com.example.myapplication.presentation.screens.authScreen.loginPage
 
+import android.content.Context
+import android.provider.Settings.Global.putString
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.edit
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myapplication.R
@@ -45,6 +48,7 @@ import com.example.myapplication.presentation.components.InputsComponents.InputE
 import com.example.myapplication.presentation.components.LoadingDialog
 import com.example.myapplication.presentation.components.SnackBar
 import com.example.myapplication.presentation.constant.ChangeLanguage
+import com.example.myapplication.presentation.constant.routes.Routes
 import com.example.myapplication.presentation.constant.routes.RoutesAuth
 import com.example.myapplication.utils.validate.validateLoginInputs
 import com.example.myapplication.presentation.viewmodel.LoginViewModel
@@ -81,8 +85,9 @@ fun LoginPage(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .imePadding()
-                .verticalScroll(scrollState),
+                .verticalScroll(scrollState)
+                .imePadding(),
+
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -198,11 +203,23 @@ fun LoginPage(
             //Success Register
             is StateLogin.Success -> {
 
+                LoadingDialog(stringResource(id = R.string.login_success_message))
+
                 LaunchedEffect(Unit) {
                     snackBarHostState.showSnackbar(
                         if (ChangeLanguage.getSavedLanguage(context)=="ar") state.data.messageAr
                         else state.data.messageEn
                     )
+                    val prefs = context.getSharedPreferences("token", Context.MODE_PRIVATE)
+
+                    prefs.edit {
+                        putString("access_token", state.data.accessToken)
+                            .putString("refresh_token", state.data.refreshToken)
+                    }
+
+                    appNavController.navigate(Routes.mainScreen){
+                        popUpTo(0){inclusive = true}
+                    }
                     loginViewModel.resetState()
                     isProgress = false
 

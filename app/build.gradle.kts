@@ -74,6 +74,15 @@ dependencies {
     //Coroutine
     implementation(libs.jetbrains.kotlinx.coroutines.android)
 
+    //    //Gif
+    implementation ("io.coil-kt:coil-compose:2.2.2") // أحدث إصدار من Coil Compose
+    implementation ("io.coil-kt:coil-gif:2.2.2") // دعم GIF
+
+    //Shimmer
+    implementation("com.valentinilk.shimmer:compose-shimmer:1.3.3")
+    implementation("com.google.accompanist:accompanist-placeholder-material:0.30.1")
+
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
