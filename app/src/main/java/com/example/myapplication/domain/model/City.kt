@@ -1,9 +1,9 @@
-package com.example.myapplication.domain.model
+package com.example.persentation.domain.data
 
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class City (
-    val index: Int,
-    val city: String,
+@kotlinx.serialization.Serializable
+data class City(
+    val id: String,
+    val governorate_id: String,
+    val city_name_ar: String,
+    val city_name_en: String
 )

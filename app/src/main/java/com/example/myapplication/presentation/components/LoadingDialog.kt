@@ -22,9 +22,9 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.myapplication.ui.theme.white
 
 @Composable
-fun LoadingDialog(message: String = "برجاء الانتظار") {
+fun LoadingDialog(message: String = "") {
     Dialog(
-        onDismissRequest = { /* لا شيء - يمنع إغلاق الـ Dialog بالضغط خارجًا */ },
+        onDismissRequest = { },
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Box(
