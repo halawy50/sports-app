@@ -1,3 +1,9 @@
 package com.example.myapplication.domain.model.token_model
 
-data class Token()
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Token(
+    val tokenId: String,
+
+)

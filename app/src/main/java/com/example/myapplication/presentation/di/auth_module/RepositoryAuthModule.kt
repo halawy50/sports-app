@@ -1,11 +1,13 @@
-package com.example.myapplication.presentation.di.auth_di
+package com.example.myapplication.presentation.di.auth_module
 
 import com.example.myapplication.data.apiService.AuthService
+import com.example.myapplication.data.repository.InformationUserRepositoryImpl
 import com.example.myapplication.data.repository.LoginRepositoryImpl
 import com.example.myapplication.data.repository.RegisterRepositoryImpl
 import com.example.myapplication.data.repository.ResetPasswordRepositoryImpl
 import com.example.myapplication.data.repository.SendOTPRepositoryImpl
 import com.example.myapplication.data.repository.VerifyCodeRepositoryImpl
+import com.example.myapplication.domain.repository.InformationUserRepository
 import com.example.myapplication.domain.repository.LoginRepository
 import com.example.myapplication.domain.repository.RegisterRepository
 import com.example.myapplication.domain.repository.ResetPasswordRepository
@@ -54,5 +56,12 @@ object RepositoryAuthModule {
     @Singleton
     fun provideResetPasswordRepository(authService: AuthService): ResetPasswordRepository {
         return ResetPasswordRepositoryImpl(authService = authService)
+    }
+
+    //InformationUser Repository
+    @Provides
+    @Singleton
+    fun provideInformationUserRepository(authService: AuthService): InformationUserRepository {
+        return InformationUserRepositoryImpl(authService = authService)
     }
 }

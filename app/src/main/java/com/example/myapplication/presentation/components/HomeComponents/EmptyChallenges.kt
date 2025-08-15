@@ -14,12 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.myapplication.R
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonFill
 import com.example.myapplication.presentation.components.GifFromDrawable
+import com.example.myapplication.presentation.constant.routes.Routes
 
 @Composable
-fun EmptyChallenges(){
+fun EmptyChallenges(
+    appNavController: NavController
+){
     val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -37,7 +41,7 @@ fun EmptyChallenges(){
         Spacer(Modifier.height(20.dp))
         ButtonFill(
             onClick = {
-
+                appNavController.navigate(Routes.addNewChallengesPage)
             },
             label = stringResource(id = R.string.add_new_challenge)
         )

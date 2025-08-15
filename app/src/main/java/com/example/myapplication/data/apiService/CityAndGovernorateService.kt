@@ -1,14 +1,15 @@
 package com.example.myapplication.data.apiService
 
-import com.example.myapplication.domain.model.GovernorateListWrapper
+import com.example.myapplication.domain.model.City
+import com.example.myapplication.domain.model.Governorate
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface CItyService {
+interface CityAndGovernorateService {
     @GET("governorates")
-    fun getGovernorates() : Response<GovernorateListWrapper>
+    suspend fun getGovernorates() : Response<List<Governorate>>
 
     @GET("cities/{governorateId}")
-    fun getCities(@Path("governorateId") governorateId: String) : Response<GovernorateListWrapper>
+    suspend fun getCities(@Path("governorateId") governorateId: String) : Response<List<City>>
 }

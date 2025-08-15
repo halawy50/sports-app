@@ -3,7 +3,7 @@ package com.example.myapplication.presentation.components.HomeComponents
 import androidx.compose.runtime.Composable
 
 @Composable
-fun LoadingHome(){
+fun LoadingShimmer(){
     CardHomePageShimmer()
     CardHomePageShimmer()
     CardHomePageShimmer()

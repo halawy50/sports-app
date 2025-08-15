@@ -1,18 +1,18 @@
 package com.example.myapplication.domain.useCase
 
-import com.example.myapplication.domain.repository.PostsUserRepository
+import com.example.myapplication.domain.repository.ChallengesUserRepository
 
-class PostsUserUseCase(private val postsUserRepository: PostsUserRepository) {
+class ChallengesUserUseCase(private val challengesUserRepository: ChallengesUserRepository) {
 
     suspend operator fun invoke(
         userId: String,
         page: Int
-    ) = postsUserRepository.getPostsUser(userId = userId, page = page)
+    ) = challengesUserRepository.getChallengesUser(userId = userId, page = page)
 
     suspend fun totalPageUserPosts(
         userId: String,
-    ) = postsUserRepository.totalPageUserPosts(userId = userId)
+    ) = challengesUserRepository.totalPageUserChallenges(userId = userId)
 
-    suspend fun previewDataUser(userId: String) = postsUserRepository.previewDataUser(userId = userId)
+    suspend fun previewDataUser(userId: String) = challengesUserRepository.previewDataUser(userId = userId)
 
 }

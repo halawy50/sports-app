@@ -30,7 +30,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myapplication.R
 import com.example.myapplication.domain.model.City
+import com.example.myapplication.domain.model.EntryModel
 import com.example.myapplication.domain.model.Gender
+import com.example.myapplication.domain.model.Governorate
 import com.example.myapplication.domain.model.WrongVerify
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonFill
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonWithBorder
@@ -45,42 +47,78 @@ import com.example.myapplication.presentation.components.ParagraphText
 import com.example.myapplication.presentation.components.SnackBar
 import com.example.myapplication.presentation.constant.ChangeLanguage
 import com.example.myapplication.presentation.constant.routes.RoutesAuth
-import com.example.myapplication.presentation.constant.cityList
 import com.example.myapplication.presentation.constant.genderList
+import com.example.myapplication.presentation.viewmodel.CityAndGovernorateViewModel
 import com.example.myapplication.utils.validate.validateSignUpInputs
 import com.example.myapplication.presentation.viewmodel.RegisterViewModel
+import com.example.myapplication.utils.StateCities
+import com.example.myapplication.utils.StateGovernorate
 import com.example.myapplication.utils.StateRegister
 
 @Composable
 fun SignUpPage(
     authNavController: NavController,
     appNavController: NavController,
-    registerViewModel: RegisterViewModel = hiltViewModel()
+    registerViewModel: RegisterViewModel = hiltViewModel(),
+    cityAndGovernorateViewModel: CityAndGovernorateViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
 
-    val genderList = genderList(context)
-    val cityList = cityList(context)
+    val genderList = genderList()
+    val governorateList by cityAndGovernorateViewModel.governorate.collectAsState()
+    val governorateState by cityAndGovernorateViewModel.stateGovernorate.collectAsState()
+    val cityList by cityAndGovernorateViewModel.cities.collectAsState()
+    val cityState by cityAndGovernorateViewModel.stateCities.collectAsState()
+
     val scrollState = rememberScrollState()
     val stateSignUp by registerViewModel.state.collectAsState()
     // Input states
     var mutableFullName by remember { mutableStateOf("") }
     var mutableAge by remember { mutableIntStateOf(0) }
-    var mutableGender by remember { mutableStateOf(Gender(index = 0, gender = "Male")) }
-    var mutableCity by remember { mutableStateOf(City(index = 0, city = "Cairo")) }
+    var mutableGender by remember { mutableStateOf(Gender(index = genderList()[0].index, genderEn = genderList()[0].titleEn, genderAr = genderList()[0].titleEn)) }
+    var mutableGovernorate by remember { mutableStateOf(Governorate(id = "-1", governorateNameAr = "" , governorateNameEn = "")) }
+    var mutableCity by remember { mutableStateOf(City(id = "-1", city_name_ar = "", city_name_en = "", governorate_id = "")) }
     var mutableEmail by remember { mutableStateOf("") }
     var mutablePassword by remember { mutableStateOf("") }
+    var cityListDropDawn by remember { mutableStateOf<List<EntryModel>>(emptyList()) }
 
     // Error states - Initialize with default WrongVerify()
     var isWrongFullName by remember { mutableStateOf(WrongVerify()) }
     var isWrongAge by remember { mutableStateOf(WrongVerify()) }
     var isWrongGender by remember { mutableStateOf(WrongVerify()) }
+    var isWrongGovernorate by remember { mutableStateOf(WrongVerify()) }
     var isWrongCity by remember { mutableStateOf(WrongVerify()) }
     var isWrongEmail by remember { mutableStateOf(WrongVerify()) }
     var isWrongPassword by remember { mutableStateOf(WrongVerify()) }
 
 
     val snackbarHostState = remember { SnackbarHostState() }
+
+
+    LaunchedEffect(cityList) {
+        if (!cityList.isNullOrEmpty()) {
+            cityListDropDawn = cityList.mapNotNull {
+                EntryModel(
+                    index = it.id.toIntOrNull() ?: -1,
+                    titleAr = it.city_name_ar,
+                    titleEn = it.city_name_en
+                )
+            }
+
+            val first = cityListDropDawn.first()
+            mutableCity = City(
+                id = first.index.toString(),
+                city_name_ar = first.titleAr,
+                city_name_en = first.titleEn,
+                governorate_id = mutableGovernorate.id
+            )
+        } else {
+            cityListDropDawn = listOf(
+                EntryModel(index = -1, titleAr = "لا توجد مدن", titleEn = "No Cities Available")
+            )
+        }
+    }
+
 
 
     var isProgress by remember { mutableStateOf(false) }
@@ -127,29 +165,70 @@ fun SignUpPage(
             DropDawnSelect(
                 list = genderList,
                 getSelected = { gender ->
-                    mutableGender = Gender(index = gender.index, gender = gender.title)
+                    mutableGender = Gender(index = gender.index, genderAr = gender.titleAr, genderEn = gender.titleEn)
                     // Clear error when user selects
                     if (isWrongGender.isWrong) {
                         isWrongGender = WrongVerify()
                     }
                 },
-                label = stringResource(R.string.gender)
+                label = stringResource(R.string.gender),
+                wrong = isWrongGender
+
             )
 
             Spacer(Modifier.height(10.dp))
 
-            // DropDown Select Cities
+//         if (!governorateList.isNullOrEmpty())
+            // DropDown Select Governorate
             DropDawnSelect(
-                list = cityList,
-                getSelected = { city ->
-                    mutableCity = City(index = city.index, city = city.title)
+                list = if (!governorateList.isNullOrEmpty()){
+                    governorateList.mapIndexed { index, item ->
+                        EntryModel(index = item.id.toInt(), titleAr = item.governorateNameAr, titleEn = item.governorateNameEn)
+                    }
+                }else listOf(EntryModel(index = -1 , titleEn = "", titleAr = "")) ,
+                getSelected = { governorate ->
+
+                    mutableGovernorate = Governorate(id = governorate.index.toString(), governorateNameAr = governorate.titleAr, governorateNameEn = governorate.titleEn)
+
+                    if(mutableGovernorate.id.toInt()>0){
+                        cityAndGovernorateViewModel.setCity(emptyList())
+                        cityAndGovernorateViewModel.getCity(governorateId = mutableGovernorate.id)
+
+                    }
+
+
                     // Clear error when user selects
-                    if (isWrongCity.isWrong) {
-                        isWrongCity = WrongVerify()
+                    if (isWrongGovernorate.isWrong) {
+                        isWrongGovernorate = WrongVerify()
                     }
                 },
-                label = stringResource(R.string.city)
+                label = stringResource(R.string.governorate),
+                wrong = isWrongGovernorate
             )
+
+            Spacer(Modifier.height(10.dp))
+
+
+            if (cityListDropDawn.isNotEmpty() && cityListDropDawn.first().index != -1)
+                // DropDown Select Cities
+                DropDawnSelect(
+                    list =  cityListDropDawn,
+                    getSelected = { city ->
+                        mutableCity = City(
+                            id = city.index.toString(),
+                            city_name_en = city.titleEn,
+                            city_name_ar = city.titleAr,
+                            governorate_id = mutableGovernorate.id
+                            )
+                        // Clear error when user selects
+                        if (isWrongCity.isWrong) {
+                            isWrongCity = WrongVerify()
+                        }
+                    },
+                    label = stringResource(id = R.string.city_or_center),
+                    wrong = isWrongCity
+
+                )
 
             Spacer(Modifier.height(10.dp))
 
@@ -203,17 +282,20 @@ fun SignUpPage(
                         fullName = mutableFullName,
                         age = mutableAge,
                         gender = mutableGender,
+                        governorate = mutableGovernorate,
                         city = mutableCity,
                         email = mutableEmail,
                         password = mutablePassword,
                         setFullNameError = { isWrongFullName = it },
                         setAgeError = { isWrongAge = it },
                         setGenderError = { isWrongGender = it },
+                        setGovernorateError = { isWrongGovernorate = it },
                         setCityError = { isWrongCity = it },
                         setEmailError = { isWrongEmail = it },
                         setPasswordError = { isWrongPassword = it },
                         context
                     )
+
 
                     request?.let {
                         registerViewModel.register(it)
@@ -237,7 +319,6 @@ fun SignUpPage(
         //State Register
         when (val state = stateSignUp) {
 
-
             //Loading
             is StateRegister.Loading -> {
                 isProgress = true
@@ -253,6 +334,7 @@ fun SignUpPage(
                         if (ChangeLanguage.getSavedLanguage(context)=="ar") state.data.messageAr
                         else state.data.messageEn
                     )
+
 
                     authNavController.navigate(RoutesAuth.loginPage){
                         popUpTo(RoutesAuth.signUpPage){inclusive = true}
@@ -284,6 +366,41 @@ fun SignUpPage(
 
         SnackBar(snackBarHostState = snackbarHostState , modifier = Modifier.align(Alignment.BottomCenter))
 
+
+        when(val state = governorateState){
+            is StateGovernorate.Idle ->{}
+            is StateGovernorate.Loading -> {
+                LoadingDialog()
+            }
+            is StateGovernorate.Success ->{
+                cityAndGovernorateViewModel.setGovernorate(state.data)
+            }
+            is StateGovernorate.Failure ->{
+                cityAndGovernorateViewModel.setGovernorate(state.data)
+            }
+            else -> {}
+        }
+
+        when(val state = cityState){
+            is StateCities.Idle ->{}
+            is StateCities.Loading -> {
+                LoadingDialog()
+            }
+            is StateCities.Success ->{
+                cityAndGovernorateViewModel.setCity(state.data)
+            }
+            is StateCities.Failure ->{
+                cityAndGovernorateViewModel.setCity(state.data)
+                val message = stringResource(id = R.string.check_internet)
+                LaunchedEffect(state) {
+                    snackbarHostState.showSnackbar(
+                        message = message
+                    )
+                }
+
+            }
+            else -> {}
+        }
 
     }
 

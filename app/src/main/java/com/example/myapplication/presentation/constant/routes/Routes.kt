@@ -6,4 +6,14 @@ object Routes {
     val changeLanguageScreen = "ChangeLanguageScreen"
     val authScreen = "AuthScreen"
     val mainScreen = "MainScreen"
+    val myChallengesPage = "MyChallengesPage"
+    val addNewChallengesPage = "AddNewChallengesPage"
+    val updateChallengePage = "UpdateChallengePage/{challengeID}"
+    val changeLanguagePage = "ChangeLanguagePage"
+    val informationUserPage = "InformationUserPage"
+
+
+    fun challengeID(challengeID: String): String {
+        return "UpdateChallengePage/${challengeID}"
+    }
 }

@@ -7,11 +7,12 @@ import com.example.myapplication.domain.model.Governorate
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PostRequest(
+data class ChallengeRequest(
     val city: City,
     val club: String,
     val descriptionPost: String,
     val gender: Gender,
     val governorate: Governorate,
-    val team: Int
+    val team: Int,
+    val whatsUpNumber: String
 )

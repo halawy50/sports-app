@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.myapplication.R
 import com.example.myapplication.domain.model.City
 import com.example.myapplication.domain.model.Gender
+import com.example.myapplication.domain.model.Governorate
 import com.example.myapplication.domain.model.WrongVerify
 import com.example.myapplication.domain.model.register_model.RegisterRequest
 
@@ -11,12 +12,14 @@ fun validateSignUpInputs(
     fullName: String,
     age: Int,
     gender: Gender,
+    governorate: Governorate,
     city: City,
     email: String,
     password: String,
     setFullNameError: (WrongVerify) -> Unit,
     setAgeError: (WrongVerify) -> Unit,
     setGenderError: (WrongVerify) -> Unit,
+    setGovernorateError: (WrongVerify) -> Unit,
     setCityError: (WrongVerify) -> Unit,
     setEmailError: (WrongVerify) -> Unit,
     setPasswordError: (WrongVerify) -> Unit,
@@ -55,15 +58,23 @@ fun validateSignUpInputs(
     }
 
     // Validate Gender
-    if (gender.gender.isBlank()) {
+    if (gender.genderAr.isBlank()&&gender.genderEn.isBlank()) {
         setGenderError(WrongVerify(true, context.getString(R.string.error_empty_gender)))
         hasError = true
     } else {
         setGenderError(WrongVerify(false, ""))
     }
 
+    // Validate Governorate
+    if (governorate.id.toInt()<0) {
+        setGovernorateError(WrongVerify(true, context.getString(R.string.error_empty_governorate)))
+        hasError = true
+    } else {
+        setGovernorateError(WrongVerify(false, ""))
+    }
+
     // Validate City
-    if (city.city.isBlank()) {
+    if (city.id.toInt()<0) {
         setCityError(WrongVerify(true, context.getString(R.string.error_empty_city)))
         hasError = true
     } else {
@@ -103,6 +114,7 @@ fun validateSignUpInputs(
     return if (hasError) null else RegisterRequest(
         fullName = fullName.trim(),
         gender = gender,
+        governorate = governorate,
         city = city,
         age = age,
         email = email.trim().lowercase(),

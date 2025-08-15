@@ -1,4 +1,4 @@
-package com.example.myapplication.presentation.di.city_and_governorate
+package com.example.myapplication.presentation.di.city_and_governorate_module
 
 import com.example.myapplication.data.apiService.CityAndGovernorateService
 import com.example.myapplication.data.repository.CityAndGovernorateRepositoryImpl

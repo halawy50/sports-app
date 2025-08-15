@@ -14,13 +14,14 @@ class WhatsAppHelper {
             phoneNumber: String?,
             message: String = ""
         ) {
+            val whatsUpNumber = "+2${phoneNumber}"
             try {
-                if (phoneNumber.isNullOrBlank()) {
+                if (whatsUpNumber.isNullOrBlank()) {
                     Toast.makeText(context, context.getString(R.string.error_phone_missing), Toast.LENGTH_SHORT).show()
                     return
                 }
 
-                if (phoneNumber.isEmpty()) {
+                if (whatsUpNumber.isEmpty()) {
                     Toast.makeText(context, context.getString(R.string.error_phone_invalid), Toast.LENGTH_SHORT).show()
                     return
                 }
@@ -32,9 +33,9 @@ class WhatsAppHelper {
                 }
 
                 val url = if (message.isNotEmpty()) {
-                    "https://api.whatsapp.com/send?phone=$phoneNumber&text=${Uri.encode(message)}"
+                    "https://api.whatsapp.com/send?phone=$whatsUpNumber&text=${Uri.encode(message)}"
                 } else {
-                    "https://api.whatsapp.com/send?phone=$phoneNumber"
+                    "https://api.whatsapp.com/send?phone=$whatsUpNumber"
                 }
 
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))

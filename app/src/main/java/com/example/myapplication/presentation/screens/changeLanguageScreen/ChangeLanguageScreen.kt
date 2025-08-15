@@ -82,7 +82,7 @@ fun ChangeLanguageScreen(
         ) {
             ButtonFill(
                 onClick = {
-                    navController.navigate(Routes.mainScreen){
+                    navController.navigate(Routes.onBoardingScreen){
                         popUpTo(0){inclusive=true}
                     }
                 },

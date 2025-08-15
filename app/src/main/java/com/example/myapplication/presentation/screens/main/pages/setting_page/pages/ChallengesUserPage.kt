@@ -1,7 +1,7 @@
 package com.example.myapplication.presentation.screens.main.pages.setting_page.pages
 
 
-import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -18,6 +18,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,10 +26,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,127 +41,243 @@ import com.example.myapplication.presentation.components.ButtonsComponents.Butto
 import com.example.myapplication.presentation.components.HeaderText
 import com.example.myapplication.presentation.components.HomeComponents.EmptyChallenges
 import com.example.myapplication.presentation.components.HomeComponents.ItemChallenger
-import com.example.myapplication.presentation.components.HomeComponents.LoadingHome
-import com.example.myapplication.presentation.viewmodel.PostsUserViewModel
-import com.example.myapplication.utils.StateGetPosts
+import com.example.myapplication.presentation.components.HomeComponents.LoadingShimmer
+import com.example.myapplication.presentation.viewmodel.ChallengesUserViewModel
+import com.example.myapplication.utils.StateGetChallenges
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.example.myapplication.R
-import com.example.myapplication.presentation.components.HideStatusBar
+import com.example.myapplication.presentation.components.AlertDialog
+import com.example.myapplication.presentation.components.LoadingDialog
+import com.example.myapplication.presentation.components.SnackBar
+import com.example.myapplication.presentation.constant.routes.Routes
+import com.example.myapplication.presentation.viewmodel.DeleteChallengeViewModel
+import com.example.myapplication.presentation.viewmodel.HomeChallengesViewModel
+import com.example.myapplication.utils.RemoveItemState
 
 @Composable
-fun PostsUserPage(
-    postsUserViewModel: PostsUserViewModel = hiltViewModel(),
-    navController: NavController,
-    activity: Activity
-
-){
+fun ChallengesUserPage(
+        challengesUserViewModel: ChallengesUserViewModel = hiltViewModel(),
+        homeChallengesViewModel: HomeChallengesViewModel,
+        navController: NavController,
+        deleteChallengeViewModel: DeleteChallengeViewModel = hiltViewModel(),
+    ){
 
     val listState = rememberLazyListState()
-    val isRefreshing = remember { mutableStateOf(false) }
-    val stateGetPosts by postsUserViewModel.stateGetPosts.collectAsState()
-    val allPosts by postsUserViewModel.posts.collectAsState()
+    val stateGetPosts by challengesUserViewModel.stateGetChallenges.collectAsState()
+    val allPosts by challengesUserViewModel.challenges.collectAsState()
+    val snackBarHostState = remember { SnackbarHostState() }
+    val swipeRefreshState = rememberSwipeRefreshState(
+        isRefreshing = stateGetPosts is StateGetChallenges.Loading && allPosts.isEmpty()
+    )
+    val context = LocalContext.current
 
-    HideStatusBar(activity = activity)
+    val removeItemState by deleteChallengeViewModel.removeChallengeState.collectAsState()
+    val selectChallengeID by deleteChallengeViewModel.selectChallengeID.collectAsState()
+    var isProgress by remember { mutableStateOf(false) }
+    val initialState by challengesUserViewModel.initialState.collectAsState()
+
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collect { lastVisibleIndex ->
                 val totalItems = listState.layoutInfo.totalItemsCount
                 val threshold = 3
-                val isLoading = stateGetPosts is StateGetPosts.Loading
+                val isLoading = stateGetPosts is StateGetChallenges.Loading
 
                 if (!isLoading && lastVisibleIndex != null && lastVisibleIndex >= totalItems - threshold) {
-                    postsUserViewModel.getAllPostUser()
+                    challengesUserViewModel.getAllChallengesUser()
                 }
             }
     }
 
     Scaffold { innerPadding->
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing.value),
-            onRefresh = {
-                isRefreshing.value = true
-                postsUserViewModel.restartCounterPage()
-                postsUserViewModel.getAllPostUser()
-                isRefreshing.value = false
-            },
+        BackHandler(enabled = isProgress) {
+
+        }
+        Box(
             modifier = Modifier.fillMaxSize().padding(innerPadding)
                 .padding(start = 20.dp, end = 10.dp)
-
-        ) {
-
-            LazyColumn(state = listState) {
-
-                item {
-                    Spacer(Modifier.height(20.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-                        HeaderText(text = stringResource(R.string.my_challenges))
-
-                        IconButton(onClick = {
-                            navController.popBackStack()
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = null,
-                                modifier = Modifier.graphicsLayer(rotationZ = 180f) // يدور السهم 180 درجة
-
-                            )
-                        }
-
+        ){
+            SwipeRefresh(
+                state = swipeRefreshState,
+                onRefresh = {
+                    if (initialState == true){
+                        deleteChallengeViewModel.setStateRemove(stateRemove = RemoveItemState.OFF_REMOVE)
+                        challengesUserViewModel.restartCounterPage()
                     }
+                },
+            ) {
 
-                    Spacer(Modifier.height(20.dp))
+                LazyColumn(state = listState) {
 
+                    item {
+                        Spacer(Modifier.height(20.dp))
 
-                }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
 
+                            HeaderText(text = stringResource(R.string.my_challenges))
 
+                            IconButton(onClick = {
+                                navController.popBackStack()
+                            }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = null,
+                                    modifier = Modifier.graphicsLayer(rotationZ = 180f)
 
-                itemsIndexed(allPosts) { index, item ->
-                    Box(
-                        modifier = Modifier.padding(end = 0.dp)
-                    ){
-                        ItemChallenger(post = item)
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-
-                item {
-                    when (val state = stateGetPosts) {
-                        is StateGetPosts.Loading -> {
-                            LoadingHome()
-                        }
-
-                        is StateGetPosts.NULL -> {
-                            EmptyChallenges()
-                        }
-
-                        is StateGetPosts.Failure -> {
-                            if (allPosts.isNotEmpty()) {
-                            } else {
-                                Text(stringResource(R.string.something_wrong), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
-                                Spacer(Modifier.height(15.dp))
-                                ButtonFill(
-                                    onClick = {
-                                        postsUserViewModel.getAllPostUser()
-                                    },
-                                    label = stringResource(R.string.retry)
                                 )
                             }
+
                         }
 
-                        else -> {}
+                        Spacer(Modifier.height(20.dp))
+
+
                     }
+
+
+
+                    itemsIndexed(allPosts) { index, item ->
+                        Box(
+                            modifier = Modifier.padding(end = 0.dp)
+                        ){
+                            ItemChallenger(challenge = item,
+                                onRemove = {
+                                    deleteChallengeViewModel.setStateRemove(
+                                        RemoveItemState.I_WANT_TO_REMOVE,
+                                        selectChallengeId = item.challengeID
+                                    )
+                                },
+                                onEdit = {
+                                    navController.navigate(Routes.challengeID(item.challengeID))
+                                }
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    item {
+                        when (val state = stateGetPosts) {
+                            is StateGetChallenges.Loading -> {
+                                LoadingShimmer()
+                            }
+
+                            is StateGetChallenges.NULL -> {
+                                EmptyChallenges(appNavController = navController)
+                            }
+
+                            is StateGetChallenges.Failure -> {
+                                if (allPosts.isNotEmpty()) {
+                                } else {
+                                    Text(stringResource(R.string.something_wrong), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                                    Spacer(Modifier.height(15.dp))
+                                    ButtonFill(
+                                        onClick = {
+                                            challengesUserViewModel.getAllChallengesUser()
+                                        },
+                                        label = stringResource(R.string.retry)
+                                    )
+                                }
+                            }
+
+                            else -> {}
+                        }
+                    }
+
+
                 }
             }
+
+            //State Remove Challenge
+            when(removeItemState){
+
+                    RemoveItemState.I_WANT_TO_REMOVE -> {
+
+                    isProgress = true
+
+                    AlertDialog(
+                        messageAlert = stringResource(id = R.string.delete_challenge_message),
+                        titleButtonOne = stringResource(id = R.string.delete_button),
+
+                        //Delete Button
+                        onClickButtonOne = {
+                            deleteChallengeViewModel.deleteChallenge(challengeID = selectChallengeID)
+                        },
+                        titleButtonTwo = stringResource(id = R.string.cancel_button),
+
+                        //Cansel Button
+                        onClickButtonTwo = {
+                            deleteChallengeViewModel.setStateRemove(RemoveItemState.OFF_REMOVE)
+                        },
+                        isButtonOne = true,
+                        isButtonTwo = true,
+                    )
+                }
+
+                RemoveItemState.REMOVING -> {
+
+                    isProgress = true
+
+                    LoadingDialog(
+                        message = stringResource(id = R.string.deleting_challenge)
+                    )
+                }
+
+                RemoveItemState.REMOVED -> {
+
+                    LaunchedEffect(true) {
+                        challengesUserViewModel.removeChallenge(challengeID = selectChallengeID)
+                        snackBarHostState.showSnackbar(message = context.getString(R.string.deleted_successfull))
+                        deleteChallengeViewModel.setStateRemove(stateRemove = RemoveItemState.OFF_REMOVE)
+
+                    }
+
+                }
+
+                RemoveItemState.OFF_REMOVE -> {
+                    isProgress = false
+                }
+
+                RemoveItemState.WRONG_WHEN_REMOVE -> {
+
+                    LaunchedEffect(removeItemState) {
+
+                        snackBarHostState.showSnackbar(message = context.getString(R.string.delete_wrong))
+
+                        isProgress = false
+
+                    }
+                }
+
+                RemoveItemState.UNAuthorization -> {
+
+                    AlertDialog(
+                        messageAlert = stringResource(R.string.session_expired_message),
+                        titleButtonOne = stringResource(R.string.back_to_login_button),
+                        isButtonOne = true,
+                        onClickButtonOne = {
+
+                            navController.navigate(Routes.authScreen){
+                                popUpTo(0){inclusive = true}
+
+                            }
+                        },
+
+                        )
+                }
+
+                else -> {}
+            }
+
+            SnackBar(snackBarHostState = snackBarHostState , modifier = Modifier.align(Alignment.BottomCenter))
+
         }
+
     }
 
 }

@@ -82,6 +82,9 @@ dependencies {
     implementation("com.valentinilk.shimmer:compose-shimmer:1.3.3")
     implementation("com.google.accompanist:accompanist-placeholder-material:0.30.1")
 
+    //Swipe
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.30.1")
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

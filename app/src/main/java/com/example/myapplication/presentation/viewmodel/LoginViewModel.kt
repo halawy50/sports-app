@@ -3,6 +3,7 @@ package com.example.myapplication.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.data.local.TokenManager
 import com.example.myapplication.domain.model.login_model.LoginRequest
 import com.example.myapplication.domain.model.login_model.LoginResponse
 import com.example.myapplication.domain.useCase.LoginUseCase
@@ -15,10 +16,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase): ViewModel() {
+class LoginViewModel @Inject constructor(
+    private val loginUseCase: LoginUseCase,
+    private val tokenManager: TokenManager
+): ViewModel() {
     private val _state = MutableStateFlow<StateLogin>(StateLogin.Idle)
     val state: StateFlow<StateLogin> = _state
 
+    val localData = tokenManager
     fun login(loginRequest: LoginRequest){
 
         viewModelScope.launch {
@@ -29,6 +34,18 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
                 val result = loginUseCase(loginRequest)
 
                 if (result.isSuccessful && result.body() != null) {
+                    val loginResponse = result.body()!! as LoginResponse
+
+                    tokenManager.saveLoginToken(
+                        userId = loginResponse.userId!!,
+                        refreshToken = loginResponse.refreshToken!!,
+                        accessToken = loginResponse.accessToken!!,
+                    )
+
+                    Log.d("AccessToken", tokenManager.getAccessToken().toString())
+                    Log.d("RefreshToken", tokenManager.getRefreshToken().toString())
+                    Log.d("UserId", tokenManager.getUserId().toString())
+
                     _state.value = StateLogin.Success(result.body()!!)
                 } else {
                     val gson = Gson()

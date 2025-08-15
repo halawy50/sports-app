@@ -16,7 +16,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor(private val registerUseCase: RegisterUseCase): ViewModel() {
+class RegisterViewModel @Inject constructor(
+    private val registerUseCase: RegisterUseCase,
+): ViewModel() {
     private val _state = MutableStateFlow<StateRegister>(StateRegister.Idle)
     val state: StateFlow<StateRegister> = _state
 
@@ -40,6 +42,8 @@ class RegisterViewModel @Inject constructor(private val registerUseCase: Registe
                     _state.value = StateRegister.Failure(data = errorResponse)
                 }
             } catch (e: Exception) {
+                Log.e("RegisterError", "$e")
+
                 _state.value = StateRegister.Failure(
                     data = RegisterResponse(
                         messageAr = "حدث خطأ غير متوقع",

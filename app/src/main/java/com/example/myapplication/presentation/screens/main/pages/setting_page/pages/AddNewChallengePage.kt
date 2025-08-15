@@ -1,6 +1,6 @@
 package com.example.myapplication.presentation.screens.main.pages.setting_page.pages
 
-import android.content.Context
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,7 +32,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.edit
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myapplication.R
@@ -42,10 +40,12 @@ import com.example.myapplication.domain.model.EntryModel
 import com.example.myapplication.domain.model.Gender
 import com.example.myapplication.domain.model.Governorate
 import com.example.myapplication.domain.model.WrongVerify
+import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
 import com.example.myapplication.presentation.components.AlertDialog
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonFill
 import com.example.myapplication.presentation.components.HeaderText
 import com.example.myapplication.presentation.components.InputsComponents.DropDawnSelect
+import com.example.myapplication.presentation.components.InputsComponents.InputNumber
 import com.example.myapplication.presentation.components.InputsComponents.InputText
 import com.example.myapplication.presentation.components.InputsComponents.LongText
 import com.example.myapplication.presentation.components.LoadingDialog
@@ -54,19 +54,18 @@ import com.example.myapplication.presentation.constant.ChangeLanguage
 import com.example.myapplication.presentation.constant.challengeTeamList
 import com.example.myapplication.presentation.constant.genderList
 import com.example.myapplication.presentation.constant.routes.Routes
-import com.example.myapplication.presentation.constant.teamList
 import com.example.myapplication.presentation.viewmodel.AddNewChallengeViewModel
 import com.example.myapplication.presentation.viewmodel.CityAndGovernorateViewModel
+import com.example.myapplication.presentation.viewmodel.HomeChallengesViewModel
 import com.example.myapplication.utils.StateAddNewChallenge
 import com.example.myapplication.utils.StateCities
 import com.example.myapplication.utils.StateGovernorate
-import com.example.myapplication.utils.StateLogin
 import com.example.myapplication.utils.validate.validateAddChallenge
-import com.example.myapplication.utils.validate.validateSignUpInputs
 
 @Composable
-fun AddNewChallenges(
+fun AddNewChallengePage(
     appNavController: NavController,
+    homeChallengesViewModel: HomeChallengesViewModel,
     cityAndGovernorateViewModel: CityAndGovernorateViewModel = hiltViewModel(),
     addNewChallengeViewModel: AddNewChallengeViewModel = hiltViewModel()
 ){
@@ -74,7 +73,7 @@ fun AddNewChallenges(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    val genderList = teamList()
+    val genderList = genderList()
     val challengerTeamList = challengeTeamList()
     val governorateList by cityAndGovernorateViewModel.governorate.collectAsState()
     val governorateState by cityAndGovernorateViewModel.stateGovernorate.collectAsState()
@@ -90,6 +89,7 @@ fun AddNewChallenges(
     var mutableCity by remember { mutableStateOf(City(id = "-1", city_name_ar = "", city_name_en = "", governorate_id = "")) }
     var cityListDropDawn by remember { mutableStateOf<List<EntryModel>>(emptyList()) }
     var mutableClub by remember { mutableStateOf("") }
+    var mutableWhatsUp by remember { mutableStateOf("") }
 
 
     // Error states - Initialize with default WrongVerify()
@@ -99,7 +99,7 @@ fun AddNewChallenges(
     var isWrongCity by remember { mutableStateOf(WrongVerify()) }
     var isWrongClub by remember { mutableStateOf(WrongVerify()) }
     var isWrongChallengeTeam by remember { mutableStateOf(WrongVerify()) }
-
+    var isWrongWhatsUp by remember { mutableStateOf(WrongVerify()) }
     val snackbarHostState = remember { SnackbarHostState() }
     var isProgress by remember { mutableStateOf(false) }
 
@@ -128,8 +128,17 @@ fun AddNewChallenges(
         }
     }
 
+    var isBack by remember { mutableStateOf(false) }
+
 
     Scaffold { innerPadding ->
+
+        BackHandler {
+            if (!isProgress){
+                isBack = true
+            }
+        }
+
 
         Box(
             modifier = Modifier.padding(innerPadding)
@@ -157,7 +166,7 @@ fun AddNewChallenges(
                     HeaderText(text = stringResource(R.string.add_new_challenge))
 
                     IconButton(onClick = {
-//                    navController.popBackStack()
+                        isBack = true
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -205,6 +214,19 @@ fun AddNewChallenges(
 
                     Spacer(Modifier.height(10.dp))
 
+                    //WhatsUp Number
+                    InputNumber(
+                        getNumber = { whatsUpNumber ->
+                            mutableWhatsUp = whatsUpNumber
+                        },
+                        label = stringResource(id = R.string.label_whatsapp),
+                        placeholder = stringResource(id = R.string.placeholder_whatsapp),
+                        maxInputNumber = 11,
+                        wrong = isWrongWhatsUp
+                    )
+
+
+                    Spacer(Modifier.height(10.dp))
 
                     // DropDown Select Gender
                     DropDawnSelect(
@@ -237,7 +259,7 @@ fun AddNewChallenges(
 
                             if(mutableGovernorate.id.toInt()>0){
                                 cityAndGovernorateViewModel.setCity(emptyList())
-                                cityAndGovernorateViewModel.getCity(governorate = mutableGovernorate)
+                                cityAndGovernorateViewModel.getCity(governorateId = mutableGovernorate.id)
 
 
 
@@ -298,20 +320,29 @@ fun AddNewChallenges(
 
                     // Button Sign Up
                     ButtonFill(
+
+
+
                         onClick = {
-                            val request = validateAddChallenge(
-                                description = mutableDescribe,
+
+                            var challengeRequest = ChallengeRequest(
+                                descriptionPost = mutableDescribe,
                                 club = mutableClub,
-                                teamChallenger = mutableChallengeTeam,
+                                team = mutableChallengeTeam + 1     ,
+                                whatsUpNumber = mutableWhatsUp,
                                 gender = mutableGender,
                                 governorate = mutableGovernorate,
                                 city = mutableCity,
+                            )
 
+                            val request = validateAddChallenge(
+                                challengeRequest = challengeRequest,
                                 setGenderError = { isWrongGender = it },
+                                setWhatsUpError = { isWrongWhatsUp = it },
                                 setGovernorateError = { isWrongGovernorate = it },
                                 setCityError = { isWrongCity = it },
                                 setTeamChallengeError = { isWrongChallengeTeam = it },
-                                context
+                                context = context
                             )
 
 
@@ -340,15 +371,17 @@ fun AddNewChallenges(
                 //Success Added Challenge
                 is StateAddNewChallenge.Success -> {
 
+
                     LoadingDialog(message = stringResource(id = R.string.challenge_added_successfully))
+
+
+                    homeChallengesViewModel.restartCounterPage()
 
                     LaunchedEffect(Unit) {
                         snackbarHostState.showSnackbar(
                             if (ChangeLanguage.getSavedLanguage(context)=="ar") state.data.messageAr
                             else state.data.messageEn
                         )
-
-
                         appNavController.navigate(Routes.mainScreen){
                             popUpTo(0){inclusive = true}
                         }
@@ -367,9 +400,10 @@ fun AddNewChallenges(
                         onClickButtonOne = {
 
                             addNewChallengeViewModel.resetState()
-
+                            homeChallengesViewModel.restartCounterPage()
                             appNavController.navigate(Routes.authScreen){
                                 popUpTo(0){inclusive = true}
+
                             }
                         },
 
@@ -391,7 +425,10 @@ fun AddNewChallenges(
                     }
                 }
 
-                else -> {}
+                else -> {
+                    isProgress = false
+
+                }
             }
 
 
@@ -433,6 +470,22 @@ fun AddNewChallenges(
 
             SnackBar(snackBarHostState = snackbarHostState , modifier = Modifier.align(Alignment.BottomCenter))
 
+            if (isBack)
+                AlertDialog(
+                    messageAlert = stringResource(R.string.exit_alert_message),
+                    isButtonOne = true,
+                    isButtonTwo = true,
+                    titleButtonOne = stringResource(R.string.yes),
+                    titleButtonTwo = stringResource(R.string.no),
+                    onClickButtonOne = {
+                        appNavController.popBackStack()
+                        isBack = false
+
+                    },
+                    onClickButtonTwo = {
+                        isBack = false
+                    }
+                )
         }
 
 

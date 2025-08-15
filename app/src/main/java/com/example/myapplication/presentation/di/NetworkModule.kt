@@ -1,6 +1,9 @@
 package com.example.myapplication.presentation.di
 
 import com.example.myapplication.data.apiService.AuthService
+import com.example.myapplication.data.apiService.CityAndGovernorateService
+import com.example.myapplication.data.apiService.ChallengeService
+import com.example.myapplication.data.apiService.TokenService
 import com.example.myapplication.presentation.constant.BaseUrl
 import dagger.Module
 import dagger.Provides
@@ -39,5 +42,23 @@ object NetworkModule {
     @Singleton
     fun provideAuthService(retrofit: Retrofit) : AuthService {
         return retrofit.create(AuthService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCityAndGovernorateService(retrofit: Retrofit) : CityAndGovernorateService {
+        return retrofit.create(CityAndGovernorateService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideChallengeService(retrofit: Retrofit) : ChallengeService {
+        return retrofit.create(ChallengeService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTokenService(retrofit: Retrofit) : TokenService {
+        return retrofit.create(TokenService::class.java)
     }
 }

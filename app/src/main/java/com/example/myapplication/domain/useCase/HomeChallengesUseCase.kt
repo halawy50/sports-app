@@ -1,8 +1,13 @@
 package com.example.myapplication.domain.useCase
 
-import com.example.myapplication.domain.repository.HomePostRepository
+import com.example.myapplication.domain.model.challenge_model.FilterRequest
+import com.example.myapplication.domain.repository.HomeChallengesRepository
+import com.example.persentation.domain.data.post_model.FilterResponse
+import retrofit2.Response
 
-class HomePostUseCase(private val homePostRepository: HomePostRepository) {
-    suspend operator fun invoke(page: Int) =  homePostRepository.getPosts(page = page)
-    suspend fun totalPage() =  homePostRepository.totalPage()
+class HomeChallengesUseCase(private val homeChallengesRepository: HomeChallengesRepository) {
+    suspend operator fun invoke(page: Int) =  homeChallengesRepository.getChallenges(page = page)
+    suspend fun totalPage() =  homeChallengesRepository.totalPage()
+    suspend fun filterChallenge(page: Int, filterRequest: FilterRequest)
+    =  homeChallengesRepository.filterChallenge(page = page, filterRequest = filterRequest )
 }

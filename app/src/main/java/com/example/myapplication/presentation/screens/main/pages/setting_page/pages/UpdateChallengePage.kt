@@ -1,5 +1,4 @@
-package com.example.myapplication.presentation.screens.main.pages.setting_page.pages
-
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +21,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.myapplication.presentation.viewmodel.CityAndGovernorateViewModel
+import com.example.myapplication.presentation.viewmodel.HomeChallengesViewModel
+import com.example.myapplication.presentation.viewmodel.UpdateChallengeViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,14 +36,13 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.myapplication.R
 import com.example.myapplication.domain.model.City
 import com.example.myapplication.domain.model.EntryModel
 import com.example.myapplication.domain.model.Gender
 import com.example.myapplication.domain.model.Governorate
 import com.example.myapplication.domain.model.WrongVerify
+import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
 import com.example.myapplication.presentation.components.AlertDialog
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonFill
 import com.example.myapplication.presentation.components.HeaderText
@@ -53,47 +56,73 @@ import com.example.myapplication.presentation.constant.ChangeLanguage
 import com.example.myapplication.presentation.constant.challengeTeamList
 import com.example.myapplication.presentation.constant.genderList
 import com.example.myapplication.presentation.constant.routes.Routes
-import com.example.myapplication.presentation.constant.teamList
-import com.example.myapplication.presentation.viewmodel.AddNewChallengeViewModel
-import com.example.myapplication.presentation.viewmodel.CityAndGovernorateViewModel
+import com.example.myapplication.presentation.viewmodel.ChallengesUserViewModel
+import com.example.myapplication.utils.GlobalState
 import com.example.myapplication.utils.StateAddNewChallenge
 import com.example.myapplication.utils.StateCities
 import com.example.myapplication.utils.StateGovernorate
+import com.example.myapplication.utils.StateUpdateChallenge
 import com.example.myapplication.utils.validate.validateAddChallenge
 
+
 @Composable
-fun AddNewChallengePage(
-    appNavController: NavController,
+fun UpdateChallengePage(
+    updateChallengeViewModel: UpdateChallengeViewModel = hiltViewModel(),
     cityAndGovernorateViewModel: CityAndGovernorateViewModel = hiltViewModel(),
-    addNewChallengeViewModel: AddNewChallengeViewModel = hiltViewModel()
-){
+    homeChallengesViewModel: HomeChallengesViewModel,
+    appNavController: NavController,
+    challengeID: String,
+) {
 
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-
-    val genderList = teamList()
-    val challengerTeamList = challengeTeamList()
-    val governorateList by cityAndGovernorateViewModel.governorate.collectAsState()
     val governorateState by cityAndGovernorateViewModel.stateGovernorate.collectAsState()
-    val cityList by cityAndGovernorateViewModel.cities.collectAsState()
     val cityState by cityAndGovernorateViewModel.stateCities.collectAsState()
-    val stateAddNewChallenge by addNewChallengeViewModel.stateAddNewChallenge.collectAsState()
+    val challenge by updateChallengeViewModel.challenge.collectAsState()
+    val challengeState by updateChallengeViewModel.stateGetChallenge.collectAsState()
+    val stateUpdateChallenge by updateChallengeViewModel.stateUpdateChallenge.collectAsState()
 
-    // Input states
-    var mutableDescribe by remember { mutableStateOf("") }
-    var mutableGender by remember { mutableStateOf(Gender(index = genderList()[0].index, genderEn = genderList()[0].titleEn, genderAr = genderList()[0].titleEn)) }
-    var mutableChallengeTeam by remember { mutableStateOf(1) }
-    var mutableGovernorate by remember { mutableStateOf(Governorate(id = "-1", governorateNameAr = "" , governorateNameEn = "")) }
-    var mutableCity by remember { mutableStateOf(City(id = "-1", city_name_ar = "", city_name_en = "", governorate_id = "")) }
-    var cityListDropDawn by remember { mutableStateOf<List<EntryModel>>(emptyList()) }
-    var mutableClub by remember { mutableStateOf("") }
-    var mutableWhatsUp by remember { mutableStateOf("") }
+    var mutableListGovernorate by remember { mutableStateOf(emptyList<EntryModel>()) }
+    var mutableListCity by remember { mutableStateOf(emptyList<EntryModel>()) }
 
+    var userChangedCity by remember { mutableStateOf(false) }
+
+    var defaultDescribe by remember { mutableStateOf("") }
+    var defaultClub by remember { mutableStateOf("") }
+    var defaultWhatsUp by remember { mutableStateOf("") }
+    var defaultGovernorateSelect by remember {
+        mutableStateOf(
+            EntryModel(
+                index = -1,
+                titleAr = "",
+                titleEn = ""
+            )
+        )
+    }
+    var defaultCitySelect by remember {
+        mutableStateOf(
+            EntryModel(
+                index = -1,
+                titleAr = "",
+                titleEn = ""
+            )
+        )
+    }
+    var mutableGovernorate by remember {
+        mutableStateOf(
+            Governorate(
+                id = "-1",
+                governorateNameAr = "",
+                governorateNameEn = ""
+            )
+        )
+    }
+    var isWrongGovernorate by remember { mutableStateOf(WrongVerify()) }
+    var isBack by remember { mutableStateOf(false) }
 
     // Error states - Initialize with default WrongVerify()
     var isWrongDescribe by remember { mutableStateOf(WrongVerify()) }
     var isWrongGender by remember { mutableStateOf(WrongVerify()) }
-    var isWrongGovernorate by remember { mutableStateOf(WrongVerify()) }
     var isWrongCity by remember { mutableStateOf(WrongVerify()) }
     var isWrongClub by remember { mutableStateOf(WrongVerify()) }
     var isWrongChallengeTeam by remember { mutableStateOf(WrongVerify()) }
@@ -101,46 +130,125 @@ fun AddNewChallengePage(
     val snackbarHostState = remember { SnackbarHostState() }
     var isProgress by remember { mutableStateOf(false) }
 
+    // حالات اختيار فريق وجنس
+    val genderList = genderList()
+    val teamList = challengeTeamList()
 
-    LaunchedEffect(cityList) {
-        if (!cityList.isNullOrEmpty()) {
-            cityListDropDawn = cityList.mapNotNull {
-                EntryModel(
-                    index = it.id.toIntOrNull() ?: -1,
-                    titleAr = it.city_name_ar,
-                    titleEn = it.city_name_en
+    var mutableGender by remember { mutableStateOf(genderList.first()) }
+    var mutableTeam by remember { mutableStateOf(teamList.first()) }
+
+    // Loading states
+    var isLoading by remember { mutableStateOf(true) }
+    var isLoadingCities by remember { mutableStateOf(false) }
+
+    // جلب التحدي عند بدء الصفحة
+    LaunchedEffect(Unit) {
+        updateChallengeViewModel.getSingleChallenge(challengeID)
+    }
+
+    // تحديث المحافظات بعد جلب المحافظات والتحدي
+    LaunchedEffect(governorateState, challengeState) {
+        if (governorateState is StateGovernorate.Success && challengeState == GlobalState.READY) {
+            val govList = (governorateState as StateGovernorate.Success).data
+            val chal = challenge
+
+            if (!govList.isNullOrEmpty() && chal != null) {
+                val mappedList = govList.map {
+                    EntryModel(
+                        index = it.id.toInt(),
+                        titleAr = it.governorateNameAr,
+                        titleEn = it.governorateNameEn
+                    )
+                }
+                val defaultGov = EntryModel(
+                    index = chal.governorate.id.toInt(),
+                    titleAr = chal.governorate.governorateNameAr,
+                    titleEn = chal.governorate.governorateNameEn
                 )
-            }
 
-            val first = cityListDropDawn.first()
-            mutableCity = City(
-                id = first.index.toString(),
-                city_name_ar = first.titleAr,
-                city_name_en = first.titleEn,
-                governorate_id = mutableGovernorate.id
-            )
-        } else {
-            cityListDropDawn = listOf(
-                EntryModel(index = -1, titleAr = "لا توجد مدن", titleEn = "No Cities Available")
-            )
+                mutableListGovernorate =
+                    listOf(defaultGov) + mappedList.filter { it.index != defaultGov.index }
+                defaultGovernorateSelect = defaultGov
+                mutableGovernorate = chal.governorate
+
+                isLoadingCities = true
+                cityAndGovernorateViewModel.getCity(governorateId = chal.governorate.id)
+            }
         }
     }
 
-    var isBack by remember { mutableStateOf(false) }
+    // تحديث المدن والقيمة الافتراضية
+    LaunchedEffect(cityState, challenge) {
+        if (cityState is StateCities.Success && challenge != null) {
+            val cities = (cityState as StateCities.Success).data
+            if (!cities.isNullOrEmpty()) {
+                val mappedCityList = cities.map {
+                    EntryModel(
+                        index = it.id.toInt(),
+                        titleAr = it.city_name_ar,
+                        titleEn = it.city_name_en
+                    )
+                }
+                mutableListCity = mappedCityList
 
+                if (!userChangedCity) {
+                    val defaultCity =
+                        mappedCityList.find { it.index == challenge!!.city.id.toInt() }
+                    defaultCitySelect = defaultCity ?: mappedCityList.first()
+                }
+            } else {
+                mutableListCity = emptyList()
+                defaultCitySelect = EntryModel(index = -1, titleAr = "", titleEn = "")
+            }
+            isLoadingCities = false
+        }
+    }
+
+    // تحديث isLoading حسب انتهاء التحميلات
+    LaunchedEffect(isLoadingCities, challengeState, governorateState) {
+        isLoading = when {
+            governorateState !is StateGovernorate.Success -> true
+            challengeState != GlobalState.READY -> true
+            isLoadingCities -> true
+            else -> false
+        }
+    }
+
+    // تعيين القيمة الافتراضية للجنس والفريق عند جلب التحدي
+    LaunchedEffect(challenge) {
+        challenge?.let { chal ->
+            Log.d("UpdateChallengePage", "Challenge gender index: ${chal.gender.index}")
+            Log.d("UpdateChallengePage", "Challenge team value: ${chal.team}")
+            Log.d("UpdateChallengePage", "Challenge Describe value: ${chal.description}")
+            Log.d("UpdateChallengePage", "Challenge Club value: ${chal.club}")
+
+            val genderFromChallenge = genderList.find { it.index == chal.gender.index }
+            if (genderFromChallenge != null) {
+                mutableGender = genderFromChallenge
+            }
+
+            val teamFromChallenge = teamList.find { it.index == chal.team - 1 }
+            if (teamFromChallenge != null) {
+                mutableTeam = teamFromChallenge
+            }
+
+            defaultDescribe = chal.description
+            defaultClub = chal.club
+            defaultWhatsUp = chal.whatsUpNumber
+        }
+    }
 
     Scaffold { innerPadding ->
 
         BackHandler {
-            if (!isProgress){
+            if (!isProgress || !isLoading) {
                 isBack = true
             }
         }
 
-
         Box(
             modifier = Modifier.padding(innerPadding)
-        ){
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -150,8 +258,6 @@ fun AddNewChallengePage(
                     .imePadding()
             )
             {
-
-
                 Spacer(Modifier.height(20.dp))
 
                 //Header
@@ -161,7 +267,7 @@ fun AddNewChallengePage(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    HeaderText(text = stringResource(R.string.add_new_challenge))
+                    HeaderText(text = stringResource(R.string.update_challenge))
 
                     IconButton(onClick = {
                         isBack = true
@@ -184,8 +290,9 @@ fun AddNewChallengePage(
 
                     // Input Describe
                     LongText(
+                        initialValue = defaultDescribe,
                         getText = { name ->
-                            mutableDescribe = name
+                            defaultDescribe = name
                             // Clear error when user starts typing
                             if (isWrongDescribe.isWrong) {
                                 isWrongDescribe = WrongVerify()
@@ -199,8 +306,9 @@ fun AddNewChallengePage(
 
                     // Input Club
                     InputText(
+                        initialValue = defaultClub,
                         getText = { name ->
-                            mutableClub = name
+                            defaultClub = name
                             // Clear error when user starts typing
                             if (isWrongClub.isWrong) {
                                 isWrongClub = WrongVerify()
@@ -214,8 +322,9 @@ fun AddNewChallengePage(
 
                     //WhatsUp Number
                     InputNumber(
+                        initialValue = defaultWhatsUp,
                         getNumber = { whatsUpNumber ->
-                            mutableWhatsUp = whatsUpNumber
+                            defaultWhatsUp = whatsUpNumber
                         },
                         label = stringResource(id = R.string.label_whatsapp),
                         placeholder = stringResource(id = R.string.placeholder_whatsapp),
@@ -226,107 +335,113 @@ fun AddNewChallengePage(
 
                     Spacer(Modifier.height(10.dp))
 
-                    // DropDown Select Gender
-                    DropDawnSelect(
-                        list = genderList,
-                        getSelected = { gender ->
-                            mutableGender = Gender(index = gender.index, genderAr = gender.titleAr, genderEn = gender.titleEn)
-                            // Clear error when user selects
-                            if (isWrongGender.isWrong) {
-                                isWrongGender = WrongVerify()
-                            }
-                        },
-                        label = stringResource(R.string.team),
-                        wrong = isWrongGender
-
-                    )
-
-                    Spacer(Modifier.height(10.dp))
-
-//         if (!governorateList.isNullOrEmpty())
-                    // DropDown Select Governorate
-                    DropDawnSelect(
-                        list = if (!governorateList.isNullOrEmpty()){
-                            governorateList.mapIndexed { index, item ->
-                                EntryModel(index = item.id.toInt(), titleAr = item.governorateNameAr, titleEn = item.governorateNameEn)
-                            }
-                        }else listOf(EntryModel(index = -1 , titleEn = "", titleAr = "")) ,
-                        getSelected = { governorate ->
-
-                            mutableGovernorate = Governorate(id = governorate.index.toString(), governorateNameAr = governorate.titleAr, governorateNameEn = governorate.titleEn)
-
-                            if(mutableGovernorate.id.toInt()>0){
-                                cityAndGovernorateViewModel.setCity(emptyList())
-                                cityAndGovernorateViewModel.getCity(governorate = mutableGovernorate)
-
-
-
-                            }
-
-
-                            // Clear error when user selects
-                            if (isWrongGovernorate.isWrong) {
-                                isWrongGovernorate = WrongVerify()
-                            }
-                        },
-                        label = stringResource(R.string.governorate),
-                        wrong = isWrongGovernorate
-                    )
-
-                    Spacer(Modifier.height(10.dp))
-
-
-                    if (cityListDropDawn.isNotEmpty() && cityListDropDawn.first().index != -1)
-                    // DropDown Select Cities
+                    // المحافظات
+                    if (mutableListGovernorate.isNotEmpty()) {
                         DropDawnSelect(
-                            list =  cityListDropDawn,
-                            getSelected = { city ->
-                                mutableCity = City(
-                                    id = city.index.toString(),
-                                    city_name_en = city.titleEn,
-                                    city_name_ar = city.titleAr,
-                                    governorate_id = mutableGovernorate.id
+                            list = mutableListGovernorate,
+                            defaultSelected = defaultGovernorateSelect,
+                            selectFirst = true,
+                            getSelected = { governorate ->
+                                val newGovernorate = Governorate(
+                                    id = governorate.index.toString(),
+                                    governorateNameAr = governorate.titleAr,
+                                    governorateNameEn = governorate.titleEn
                                 )
-                                // Clear error when user selects
-                                if (isWrongCity.isWrong) {
-                                    isWrongCity = WrongVerify()
+
+                                if (mutableGovernorate.id != newGovernorate.id) {
+                                    mutableGovernorate = newGovernorate
+
+                                    cityAndGovernorateViewModel.setCity(emptyList())
+                                    mutableListCity = emptyList()
+                                    defaultCitySelect =
+                                        EntryModel(index = -1, titleAr = "", titleEn = "")
+                                    userChangedCity = false
+
+                                    isLoadingCities = true
+                                    cityAndGovernorateViewModel.getCity(governorateId = mutableGovernorate.id)
+                                }
+
+                                if (isWrongGovernorate.isWrong) {
+                                    isWrongGovernorate = WrongVerify()
                                 }
                             },
-                            label = stringResource(id = R.string.city_or_center),
-                            wrong = isWrongCity
-
+                            label = stringResource(R.string.governorate),
+                            wrong = isWrongGovernorate
                         )
+                    }
 
                     Spacer(Modifier.height(10.dp))
 
-                    // DropDown Select Challenge Team
-                    DropDawnSelect(
-                        list = challengerTeamList,
-                        getSelected = { challengerTeam ->
-                            mutableChallengeTeam = challengerTeam.index
-                            // Clear error when user selects
-                            if (isWrongChallengeTeam.isWrong) {
-                                isWrongChallengeTeam = WrongVerify()
-                            }
-                        },
-                        label = stringResource(R.string.challange_team),
-                        wrong = isWrongGender
+                    // المدن
+                    if (mutableListCity.isNotEmpty()) {
+                        DropDawnSelect(
+                            selectFirst = true,
+                            list = mutableListCity,
+                            defaultSelected = defaultCitySelect,
+                            getSelected = { city ->
+                                defaultCitySelect = city
+                                userChangedCity = true
+                            },
+                            label = stringResource(R.string.city_or_center),
+                            wrong = WrongVerify()
+                        )
+                    }
 
+                    Spacer(Modifier.height(10.dp))
+
+                    // اختيار الجنس
+                    DropDawnSelect(
+                        list = genderList,
+                        defaultSelected = mutableGender,
+                        getSelected = { gender ->
+                            mutableGender = gender
+                            // ممكن هنا تمسح أخطاء لو تستخدمها
+                        },
+                        label = stringResource(R.string.gender),
+                        wrong = WrongVerify()
+                    )
+
+                    Spacer(Modifier.height(10.dp))
+
+                    // اختيار الفريق (team)
+                    DropDawnSelect(
+                        list = teamList,
+                        defaultSelected = mutableTeam,
+                        getSelected = { team ->
+                            mutableTeam = team
+                            // ممكن هنا تمسح أخطاء لو تستخدمها
+                        },
+                        label = stringResource(R.string.team),
+                        wrong = WrongVerify()
                     )
 
                     Spacer(Modifier.height(20.dp))
 
-                    // Button Sign Up
+                    // Button Update
                     ButtonFill(
                         onClick = {
-                            val request = validateAddChallenge(
-                                description = mutableDescribe,
-                                club = mutableClub,
-                                teamChallenger = mutableChallengeTeam,
-                                whatsUpNumber = mutableWhatsUp,
-                                gender = mutableGender,
+
+                           var challengeRequest = ChallengeRequest(
+                                descriptionPost = defaultDescribe,
+                                club = defaultClub,
+                                team = mutableTeam.index + 1,
+                                whatsUpNumber = defaultWhatsUp,
+                                gender = Gender(
+                                    index = mutableGender.index,
+                                    genderAr = mutableGender.titleAr,
+                                    genderEn = mutableGender.titleEn
+                                ),
                                 governorate = mutableGovernorate,
-                                city = mutableCity,
+                                city = City(
+                                    id = defaultCitySelect.index.toString(),
+                                    governorate_id = defaultGovernorateSelect.index.toString(),
+                                    city_name_ar = defaultCitySelect.titleAr.toString(),
+                                    city_name_en = defaultCitySelect.titleEn.toString()
+                                ),
+                            )
+
+                            val request = validateAddChallenge(
+                                challengeRequest = challengeRequest,
                                 setGenderError = { isWrongGender = it },
                                 setWhatsUpError = { isWrongWhatsUp = it },
                                 setGovernorateError = { isWrongGovernorate = it },
@@ -337,57 +452,76 @@ fun AddNewChallengePage(
 
 
                             request?.let {
-                                addNewChallengeViewModel.addNewChallenge(it)
+                                updateChallengeViewModel.updateChallenge(challengeID = challengeID, challengeRequest = it)
                             }
                         },
-                        label = stringResource(R.string.add_new_challenge)
+                        label = stringResource(R.string.update_challenge)
                     )
                 }
 
+
             }
 
-
-            //State Add New Challenge
-            when (val state = stateAddNewChallenge) {
+            //State Update New Challenge
+            when (val state = stateUpdateChallenge) {
 
                 //Loading
-                is StateAddNewChallenge.Loading -> {
+                is StateUpdateChallenge.Loading -> {
                     isProgress = true
 
-                    LoadingDialog(message = stringResource(R.string.adding_challenge))
+                    LoadingDialog(message = stringResource(R.string.updating_challenge))
 
                 }
 
-                //Success Added Challenge
-                is StateAddNewChallenge.Success -> {
+                //Successful
+                is StateUpdateChallenge.Success -> {
+                    LoadingDialog(message = stringResource(id = R.string.challenge_update_successfully))
 
-                    LoadingDialog(message = stringResource(id = R.string.challenge_added_successfully))
+                    var challengeRequest = ChallengeRequest(
+                        descriptionPost = defaultDescribe,
+                        club = defaultClub,
+                        team = mutableTeam.index + 1,
+                        whatsUpNumber = defaultWhatsUp,
+                        gender = Gender(
+                            index = mutableGender.index,
+                            genderAr = mutableGender.titleAr,
+                            genderEn = mutableGender.titleEn
+                        ),
+                        governorate = mutableGovernorate,
+                        city = City(
+                            id = defaultCitySelect.index.toString(),
+                            governorate_id = defaultGovernorateSelect.index.toString(),
+                            city_name_ar = defaultCitySelect.titleAr.toString(),
+                            city_name_en = defaultCitySelect.titleEn.toString()
+                        ),
+                    )
+                        //Update Challenges in Home Page
+                        LaunchedEffect(true) {
+                            homeChallengesViewModel.updateChallenge(challengeID = challengeID, challengeRequest = challengeRequest)
 
-                    LaunchedEffect(Unit) {
-                        snackbarHostState.showSnackbar(
-                            if (ChangeLanguage.getSavedLanguage(context)=="ar") state.data.messageAr
-                            else state.data.messageEn
-                        )
+                            Log.d("UpdatedChallenge", state.data.messageEn)
+                                snackbarHostState.showSnackbar(
+                                    if (ChangeLanguage.getSavedLanguage(context) == "ar") state.data.messageAr
+                                    else state.data.messageEn
+                                )
 
 
-                        appNavController.navigate(Routes.mainScreen){
-                            popUpTo(0){inclusive = true}
+                                appNavController.popBackStack()
+
+                                isProgress = false
                         }
-
-                        isProgress = false
-
-                    }
                 }
+
 
                 //UnAuthorization
-                is StateAddNewChallenge.UnAuthorization -> {
+                is StateUpdateChallenge.UnAuthorization -> {
                     AlertDialog(
                         messageAlert = stringResource(R.string.session_expired_message),
                         titleButtonOne = stringResource(R.string.back_to_login_button),
                         isButtonOne = true,
                         onClickButtonOne = {
 
-                            addNewChallengeViewModel.resetState()
+                            updateChallengeViewModel.resetState()
 
                             appNavController.navigate(Routes.authScreen){
                                 popUpTo(0){inclusive = true}
@@ -395,12 +529,12 @@ fun AddNewChallengePage(
                             }
                         },
 
-                    )
+                        )
                 }
 
 
-                // Failure Added Challenge
-                is StateAddNewChallenge.Failure -> {
+                // Failure Update Challenge
+                is StateUpdateChallenge.Failure -> {
 
                     LaunchedEffect(state) {
 
@@ -408,55 +542,35 @@ fun AddNewChallengePage(
                             if (ChangeLanguage.getSavedLanguage(context)=="ar") state.data.messageAr
                             else state.data.messageEn
                         )
+
                         isProgress = false
 
                     }
                 }
 
-                else -> {
-                    isProgress = false
-
-                }
-            }
-
-
-
-            when(val state = governorateState){
-                is StateGovernorate.Idle ->{}
-                is StateGovernorate.Loading -> {
-                    LoadingDialog()
-                }
-                is StateGovernorate.Success ->{
-                    cityAndGovernorateViewModel.setGovernorate(state.data)
-                }
-                is StateGovernorate.Failure ->{
-                    cityAndGovernorateViewModel.setGovernorate(state.data)
-                }
                 else -> {}
             }
 
-            when(val state = cityState){
-                is StateCities.Idle ->{}
-                is StateCities.Loading -> {
-                    LoadingDialog()
-                }
-                is StateCities.Success ->{
-                    cityAndGovernorateViewModel.setCity(state.data)
-                }
-                is StateCities.Failure ->{
-                    cityAndGovernorateViewModel.setCity(state.data)
-                    val message = stringResource(id = R.string.check_internet)
-                    LaunchedEffect(state) {
-                        snackbarHostState.showSnackbar(
-                            message = message
-                        )
-                    }
-
-                }
-                else -> {}
+            if (isLoading) {
+                LoadingDialog()
             }
 
-            SnackBar(snackBarHostState = snackbarHostState , modifier = Modifier.align(Alignment.BottomCenter))
+            if (challengeState == GlobalState.Error){
+                AlertDialog(
+                    messageAlert = stringResource(R.string.check_internet),
+                    onClickButtonOne = {
+                        updateChallengeViewModel.getSingleChallenge(challengeID = challengeID)
+                        cityAndGovernorateViewModel.getGovernorate()
+                    },
+                    titleButtonOne = stringResource(R.string.retry),
+                    isButtonTwo = true,
+                    onClickButtonTwo = {
+                        appNavController.popBackStack()
+
+                    },
+                    titleButtonTwo = stringResource(R.string.back)
+                )
+            }
 
             if (isBack)
                 AlertDialog(
@@ -474,8 +588,10 @@ fun AddNewChallengePage(
                         isBack = false
                     }
                 )
+
+            SnackBar(snackBarHostState = snackbarHostState , modifier = Modifier.align(Alignment.BottomCenter))
+
         }
-
-
     }
 }
+

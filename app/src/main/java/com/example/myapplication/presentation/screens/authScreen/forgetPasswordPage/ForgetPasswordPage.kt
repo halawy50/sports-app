@@ -58,6 +58,7 @@ fun ForgetPasswordPage(
     var isWrongEmail by remember { mutableStateOf(WrongVerify()) }
 
     var isProgress by remember { mutableStateOf(false) }
+
     BackHandler(enabled = isProgress) {
         authNavController.navigate(RoutesAuth.loginPage) {
             popUpTo(0) { inclusive = true }

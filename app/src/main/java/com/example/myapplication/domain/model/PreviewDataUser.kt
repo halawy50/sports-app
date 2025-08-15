@@ -1,15 +1,16 @@
 package com.example.myapplication.domain.model
 
 
+import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class PreviewDataUser(
-    @SerialName("email")
+    @SerializedName("email")
     val email: String,
-    @SerialName("gender")
+    @SerializedName("gender")
     val gender: Int,
-    @SerialName("name")
+    @SerializedName("name")
     val name: String
 )

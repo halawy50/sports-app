@@ -1,10 +1,12 @@
-package com.example.myapplication.presentation.di.auth_di
+package com.example.myapplication.presentation.di.auth_module
 
+import com.example.myapplication.domain.repository.InformationUserRepository
 import com.example.myapplication.domain.repository.LoginRepository
 import com.example.myapplication.domain.repository.RegisterRepository
 import com.example.myapplication.domain.repository.ResetPasswordRepository
 import com.example.myapplication.domain.repository.SendOTPRepository
 import com.example.myapplication.domain.repository.VerifyCodeRepository
+import com.example.myapplication.domain.useCase.InformationUserUseCase
 import com.example.myapplication.domain.useCase.LoginUseCase
 import com.example.myapplication.domain.useCase.RegisterUseCase
 import com.example.myapplication.domain.useCase.ResetPasswordUseCase
@@ -53,5 +55,12 @@ object UseCaseAuthModule {
     @Singleton
     fun providesUseCaseResetPassword(resetPasswordRepository: ResetPasswordRepository): ResetPasswordUseCase{
         return ResetPasswordUseCase(resetPasswordRepository = resetPasswordRepository)
+    }
+
+    //InformationUser UseCase
+    @Provides
+    @Singleton
+    fun providesUseCaseInformationUser(informationUserRepository: InformationUserRepository): InformationUserUseCase{
+        return InformationUserUseCase(informationUserRepository = informationUserRepository)
     }
 }

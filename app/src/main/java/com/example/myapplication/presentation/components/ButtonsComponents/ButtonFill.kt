@@ -17,6 +17,7 @@ import com.example.myapplication.ui.theme.blue
 import com.example.myapplication.ui.theme.white
 
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import com.example.myapplication.domain.model.challenge_model.FilterRequest
 
 @Composable
 fun ButtonFill(

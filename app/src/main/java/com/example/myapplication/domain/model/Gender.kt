@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Gender (
     val index: Int,
-    val gender: String,
+        val genderAr: String,
+        val genderEn: String,
 )

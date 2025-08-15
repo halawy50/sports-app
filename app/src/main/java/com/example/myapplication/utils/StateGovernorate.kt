@@ -1,11 +1,10 @@
 package com.example.myapplication.utils
 
-import com.example.myapplication.domain.model.generate_otp.GenerateOTPResponse
-import com.example.myapplication.domain.model.login_model.LoginResponse
+import com.example.myapplication.domain.model.Governorate
 
-sealed class StateSendOTP {
-    object Idle : StateSendOTP()
-    object Loading : StateSendOTP()
-    data class Success(val data: GenerateOTPResponse) : StateSendOTP()
-    data class Failure(val data: GenerateOTPResponse) : StateSendOTP()
+sealed class StateGovernorate {
+    object Idle : StateGovernorate()
+    object Loading : StateGovernorate()
+    data class Success(val data: List<Governorate>) : StateGovernorate()
+    data class Failure(val data: List<Governorate>) : StateGovernorate()
 }

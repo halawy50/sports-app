@@ -1,15 +1,12 @@
 package com.example.myapplication.domain.model
 
+import com.google.gson.annotations.SerializedName
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class GovernorateItem(
-    @SerialName("governorate_name_ar")
+data class Governorate(
+    @SerializedName("governorate_name_ar")
     val governorateNameAr: String,
-    @SerialName("governorate_name_en")
+    @SerializedName("governorate_name_en")
     val governorateNameEn: String,
-    @SerialName("id")
+    @SerializedName("id")
     val id: String
 )

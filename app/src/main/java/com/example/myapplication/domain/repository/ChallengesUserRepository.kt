@@ -4,15 +4,15 @@ import com.example.myapplication.domain.model.PreviewDataUser
 import com.example.myapplication.domain.model.challenge_model.ChallengeUserResponse
 import retrofit2.Response
 
-interface PostsUserRepository {
+interface ChallengesUserRepository {
 
-    suspend fun getPostsUser(
+    suspend fun getChallengesUser(
         userId: String,
         page: Int
 
     ): Response<ChallengeUserResponse>
 
-    suspend fun totalPageUserPosts(
+    suspend fun totalPageUserChallenges(
         userId: String,
     ): Response<Int>
 

@@ -1,10 +1,11 @@
 package com.example.myapplication.utils
 
+import com.example.myapplication.domain.model.PreviewDataUser
 import com.example.myapplication.domain.model.login_model.LoginResponse
 
-sealed class StateLogin {
-    object Idle : StateLogin()
-    object Loading : StateLogin()
-    data class Success(val data: LoginResponse) : StateLogin()
-    data class Failure(val data: LoginResponse) : StateLogin()
+sealed class StatePreviewDataUser {
+    object Idle : StatePreviewDataUser()
+    object Loading : StatePreviewDataUser()
+    data class Success(val data: PreviewDataUser) : StatePreviewDataUser()
+    data class Failure(val data: PreviewDataUser) : StatePreviewDataUser()
 }

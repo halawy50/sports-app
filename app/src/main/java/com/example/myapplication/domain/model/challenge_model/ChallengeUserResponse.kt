@@ -1,14 +1,13 @@
-package com.example.myapplication.domain.model.post_model
+package com.example.myapplication.domain.model.challenge_model
 
 
 import com.google.gson.annotations.SerializedName
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PostsUserResponse(
+data class ChallengeUserResponse(
     @SerializedName("data")
-    val `data`: List<Post>,
+    val `data`: List<Challenge>,
     @SerializedName("isGetData")
     val isGetData: Boolean,
     @SerializedName("statusCode")

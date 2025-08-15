@@ -226,7 +226,7 @@ fun LoginPage(
                 }
             }
 
-            //Success Failure Register
+            //Failure Register
             is StateLogin.Failure -> {
 
                 LaunchedEffect(state) {

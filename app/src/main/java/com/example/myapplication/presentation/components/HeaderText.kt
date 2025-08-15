@@ -10,7 +10,10 @@ import com.example.myapplication.ui.theme.almarai_extrabold
 import com.example.myapplication.ui.theme.black
 
 @Composable
-fun HeaderText(text: String , textAlign: TextAlign = TextAlign.Center){
+fun HeaderText(
+    text: String ,
+    textAlign: TextAlign = TextAlign.Center ,
+){
     Text(
         text = text,
         style = TextStyle(

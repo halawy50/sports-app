@@ -1,9 +1,15 @@
-package com.example.myapplication.presentation.di.post_module
+package com.example.myapplication.presentation.di.challenge_module
 
-import com.example.myapplication.domain.repository.HomePostRepository
-import com.example.myapplication.domain.repository.PostsUserRepository
-import com.example.myapplication.domain.useCase.HomePostUseCase
-import com.example.myapplication.domain.useCase.PostsUserUseCase
+import com.example.myapplication.domain.repository.AddNewChallengeRepository
+import com.example.myapplication.domain.repository.HomeChallengesRepository
+import com.example.myapplication.domain.repository.ChallengesUserRepository
+import com.example.myapplication.domain.repository.DeleteChallengeRepository
+import com.example.myapplication.domain.repository.UpdateChallengeRepository
+import com.example.myapplication.domain.useCase.AddNewChallengeUseCase
+import com.example.myapplication.domain.useCase.HomeChallengesUseCase
+import com.example.myapplication.domain.useCase.ChallengesUserUseCase
+import com.example.myapplication.domain.useCase.DeleteChallengeUseCase
+import com.example.myapplication.domain.useCase.UpdateChallengeUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,20 +18,38 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object UseCasePostModule {
+object UseCaseChallengeModule {
 
 
     @Provides
     @Singleton
-    fun provideHomePostUseCase(homePostRepository: HomePostRepository): HomePostUseCase{
-        return HomePostUseCase(homePostRepository = homePostRepository)
+    fun provideHomeChallengeUseCase(homeChallengesRepository: HomeChallengesRepository): HomeChallengesUseCase{
+        return HomeChallengesUseCase(homeChallengesRepository = homeChallengesRepository)
     }
 
 
     @Provides
     @Singleton
-    fun providePostsUserUseCase(postsUserRepository: PostsUserRepository): PostsUserUseCase{
-        return PostsUserUseCase(postsUserRepository = postsUserRepository)
+    fun provideChallengesUserUseCase(challengesUserRepository: ChallengesUserRepository): ChallengesUserUseCase{
+        return ChallengesUserUseCase(challengesUserRepository = challengesUserRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAddNewChallengesUseCase(addNewChallengeRepository: AddNewChallengeRepository): AddNewChallengeUseCase{
+        return AddNewChallengeUseCase(addNewChallengeRepository = addNewChallengeRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteChallengesUseCase(deleteChallengeRepository: DeleteChallengeRepository): DeleteChallengeUseCase{
+        return DeleteChallengeUseCase(deleteChallengeRepository = deleteChallengeRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateChallengesUseCase(updateChallengeRepository: UpdateChallengeRepository): UpdateChallengeUseCase{
+        return UpdateChallengeUseCase(updateChallengeRepository = updateChallengeRepository)
     }
 
 }

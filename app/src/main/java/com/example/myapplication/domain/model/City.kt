@@ -1,4 +1,4 @@
-package com.example.persentation.domain.data
+package com.example.myapplication.domain.model
 
 @kotlinx.serialization.Serializable
 data class City(

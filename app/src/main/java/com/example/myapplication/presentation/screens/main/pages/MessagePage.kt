@@ -1,4 +1,4 @@
-package com.example.myapplication.presentation.screens.main.messagePage
+package com.example.myapplication.presentation.screens.main.pages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

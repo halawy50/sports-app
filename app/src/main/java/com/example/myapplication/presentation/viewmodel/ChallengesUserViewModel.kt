@@ -6,24 +6,25 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.local.TokenManager
 import com.example.myapplication.domain.model.PreviewDataUser
 import com.example.myapplication.domain.model.challenge_model.Challenge
-import com.example.myapplication.domain.useCase.PostsUserUseCase
-import com.example.myapplication.utils.StateGetPosts
+import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
+import com.example.myapplication.domain.useCase.ChallengesUserUseCase
+import com.example.myapplication.utils.StateGetChallenges
 import com.example.myapplication.utils.StatePreviewDataUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PostsUserViewModel @Inject constructor(
-    private val postsUserUseCase: PostsUserUseCase,
+class ChallengesUserViewModel @Inject constructor(
+    private val challengesUserUseCase: ChallengesUserUseCase,
     private val localTokenManager: TokenManager,
+): UpdateChallenge, ViewModel() {
 
-    ): ViewModel() {
-
-    private val _posts = MutableStateFlow<List<Challenge>>(emptyList())
-    val posts: StateFlow<List<Challenge>> = _posts
+    private val _challenges = MutableStateFlow<List<Challenge>>(emptyList())
+    val challenges: StateFlow<List<Challenge>> = _challenges
 
     private val _totalPage = MutableStateFlow<Int>(1)
     val totalPage: StateFlow<Int> = _totalPage
@@ -31,105 +32,106 @@ class PostsUserViewModel @Inject constructor(
     private val _counterPage = MutableStateFlow<Int>(1)
     val counterPage: StateFlow<Int> = _counterPage
 
+    private val _initialState = MutableStateFlow<Boolean>(false)
+    val initialState : StateFlow<Boolean> = _initialState
 
-    private val _stateGetPosts = MutableStateFlow<StateGetPosts>(StateGetPosts.Idle)
-    val stateGetPosts: StateFlow<StateGetPosts> = _stateGetPosts
-
-    private val _statePreviewDataUser = MutableStateFlow<StatePreviewDataUser>(StatePreviewDataUser.Idle)
-    val statePreviewDataUser: StateFlow<StatePreviewDataUser> = _statePreviewDataUser
+    private val _stateGetChallenges = MutableStateFlow<StateGetChallenges>(StateGetChallenges.Idle)
+    val stateGetChallenges: StateFlow<StateGetChallenges> = _stateGetChallenges
 
     init {
-        totalPage()
-        getAllPostUser()
-        previewDataUser()
-    }
-
-
-    fun previewDataUser(){
         viewModelScope.launch {
-            _statePreviewDataUser.value = StatePreviewDataUser.Loading
-            try {
-                val result = postsUserUseCase.previewDataUser(localTokenManager.getUserId().toString())
-                if (result.isSuccessful || result.body() != null){
-                    _statePreviewDataUser.value = StatePreviewDataUser.Success(result.body()!!)
-                    Log.d("Preview Data User" , result.body().toString())
+            _stateGetChallenges.value = StateGetChallenges.Loading
+            totalPage()
+            getAllChallengesUser()
+            _initialState.value = true
 
-                }else{
-                    _statePreviewDataUser.value = StatePreviewDataUser.Failure(result.body()!!)
-                }
-            }catch (e: Exception){
-                Log.d("Error Preview Data User" , e.toString())
-                _statePreviewDataUser.value = StatePreviewDataUser.Failure(PreviewDataUser(
-                    email = "",
-                    gender = -1,
-                    name = ""
-                ))
-            }
         }
+
+
     }
 
 
-    fun getAllPostUser() {
-        if (_stateGetPosts.value == StateGetPosts.Loading) return // 🔒 block retry
+    fun getAllChallengesUser() {
+        if (_stateGetChallenges.value == StateGetChallenges.Loading) StateGetChallenges.Loading
 
         if (counterPage.value > totalPage.value) return
 
         viewModelScope.launch {
-            _stateGetPosts.value = StateGetPosts.Loading
-            Log.d("getAllPost", " Loading posts for page ${counterPage.value}")
+            _stateGetChallenges.value = StateGetChallenges.Loading
+            Log.d("getAllChallenges", " Loading Challenges for page ${counterPage.value}")
 
             try {
-                val result = postsUserUseCase.invoke(page = counterPage.value, userId = localTokenManager.getUserId().toString())
+                val result = challengesUserUseCase(page = counterPage.value, userId = localTokenManager.getUserId().toString())
 
                 when {
                     result.isSuccessful && result.body()!!.data.isNullOrEmpty() && counterPage.value == 1 -> {
-                        _stateGetPosts.value = StateGetPosts.NULL
-                        Log.d("getAllPostUser", " No posts found (page = 1)")
+                        _stateGetChallenges.value = StateGetChallenges.NULL
+                        Log.d("getAllChallenges", " No posts found (page = 1)")
                     }
 
                     result.isSuccessful && result.body() != null -> {
                         val newPosts = result.body()!!.data
 
-                        _posts.value = _posts.value + newPosts
+                        val uniquePosts = newPosts.filter { newItem ->
+                            _challenges.value.none { it.challengeID == newItem.challengeID }
+                        }
 
-                        _stateGetPosts.value = StateGetPosts.Success(data = _posts.value)
+                        _challenges.value = _challenges.value + uniquePosts
+
+                        _stateGetChallenges.value = StateGetChallenges.Success(data = _challenges.value)
 
                         _counterPage.value = counterPage.value + 1
 
-                        Log.d("getAllPostUser", " Success: loaded ${newPosts.size} posts")
+                        Log.d("getAllChallenges", " Success: loaded ${uniquePosts.size} unique Challenges")
                     }
 
                     result.isSuccessful && result.body() == null -> {
-                        _stateGetPosts.value = StateGetPosts.Failure(data = emptyList())
-                        Log.w("getAllPostUser", " Response successful but body is null")
+                        _stateGetChallenges.value = StateGetChallenges.Failure(data = emptyList())
+                        Log.w("getAllChallenges", " Response successful but body is null")
                     }
 
                     result.body()!!.statusCode==401 -> {
-                        _stateGetPosts.value = StateGetPosts.Failure(data = emptyList())
-                        Log.e("getAllPostUser", " Failed response: ${result.code()} - ${result.message()}")
+                        _stateGetChallenges.value = StateGetChallenges.Failure(data = emptyList())
+                        Log.e("getAllChallenges", " Failed response: ${result.code()} - ${result.message()}")
                     }
                 }
 
             } catch (e: Exception) {
-                _stateGetPosts.value = StateGetPosts.Failure(data = emptyList())
-                Log.e("getAllPostUser", " Exception thrown: ${e.localizedMessage}", e)
+                _stateGetChallenges.value = StateGetChallenges.Failure(data = emptyList())
+                Log.e("getAllChallenges", " Exception thrown: ${e.localizedMessage}", e)
             }
         }
     }
 
     fun restartCounterPage() {
-        _posts.value = emptyList()
-        _counterPage.value = 1
-        _stateGetPosts.value = StateGetPosts.Idle
-    }
+        viewModelScope.launch {
+            Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 1")
+            _stateGetChallenges.value = StateGetChallenges.Loading
 
+            _challenges.value = emptyList()
+            Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 2")
+
+            _counterPage.value = 1
+            _totalPage.value = 1
+
+            totalPage()
+            Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 3")
+
+            Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 4")
+
+            getAllChallengesUser()
+
+            Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 5")
+
+        }
+    }
 
     fun totalPage(){
 
         viewModelScope.launch {
             try {
 
-                val totalPageResponse = postsUserUseCase.totalPageUserPosts(userId = localTokenManager.getUserId().toString())
+                val totalPageResponse = challengesUserUseCase.totalPageUserPosts(userId = localTokenManager.getUserId().toString())
 
                 if (totalPageResponse.isSuccessful && totalPageResponse.body() != null || totalPageResponse.body()!! > 0){
                     _totalPage.value = totalPageResponse.body() as Int
@@ -142,4 +144,40 @@ class PostsUserViewModel @Inject constructor(
             }
         }
     }
+
+    // Remove a challenge by its ID from the current list and update the state if the list becomes empty
+    fun removeChallenge(challengeID: String) {
+        _challenges.value = _challenges.value.filterNot { it.challengeID == challengeID }
+        if (_challenges.value.isEmpty()) {
+            _stateGetChallenges.value = StateGetChallenges.NULL
+        }
+    }
+
+    override fun updateChallenge(challengeID: String, challengeRequest: ChallengeRequest): Boolean {
+        var updated = false
+
+        _challenges.update { challenges ->
+            challenges.map { item ->
+                if (item.challengeID == challengeID) {
+                    updated = true
+                    item.copy(
+                        description = challengeRequest.descriptionPost,
+                        club = challengeRequest.club,
+                        whatsUpNumber = challengeRequest.whatsUpNumber,
+                        gender = challengeRequest.gender,
+                        team = challengeRequest.team,
+                        governorate = challengeRequest.governorate,
+                        city = challengeRequest.city
+                    )
+                } else {
+                    item // مهم ترجع العنصر كما هو إذا لم ينطبق الشرط
+                }
+            }
+        }
+
+        return updated
+    }
+
 }
+
+

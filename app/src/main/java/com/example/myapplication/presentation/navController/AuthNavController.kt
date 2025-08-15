@@ -82,6 +82,7 @@ fun AuthNavController(appNavController: NavController , activity: Activity , pad
                 email = email,
                 otp = otp
              )
+
         }
 
 
