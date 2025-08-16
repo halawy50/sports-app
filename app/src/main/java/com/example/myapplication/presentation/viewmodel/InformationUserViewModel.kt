@@ -36,14 +36,14 @@ class InformationUserViewModel @Inject constructor(
                 val informationUserResult = informationUserUseCase(tokenManager.getUserId().toString())
 
                 if (informationUserResult.isSuccessful && informationUserResult.body() != null){
-                    _stateFetchData.value = GlobalState.READY
+                    _stateFetchData.value = GlobalState.SUCCESS
                     _informationUser.value = informationUserResult.body()
                 }else if (informationUserResult.isSuccessful() && informationUserResult.body() == null){
                     Log.d("InformationUser", "EMPTY")
                     _stateFetchData.value = GlobalState.EMPTY
                 }else{
                     Log.d("InformationUser", "Error")
-                    _stateFetchData.value = GlobalState.Error
+                    _stateFetchData.value = GlobalState.ERROR
                 }
 
             }catch (e: Exception){
@@ -53,7 +53,7 @@ class InformationUserViewModel @Inject constructor(
                     messageEn = "Unexpected error occurred: ${e.message}",
                     statusCode = 500
                 )}")
-                _stateFetchData.value = GlobalState.Error
+                _stateFetchData.value = GlobalState.ERROR
 
             }
         }

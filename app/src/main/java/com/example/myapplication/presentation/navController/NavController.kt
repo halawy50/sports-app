@@ -20,6 +20,7 @@ import com.example.myapplication.presentation.screens.main.pages.setting_page.pa
 import com.example.myapplication.presentation.screens.main.pages.setting_page.pages.ChallengesUserPage
 import com.example.myapplication.presentation.screens.main.pages.setting_page.pages.InformationUserPage
 import com.example.myapplication.presentation.screens.main.pages.setting_page.pages.LanguagePage
+import com.example.myapplication.presentation.screens.main.pages.setting_page.pages.PrivacyPolicyPage
 import com.example.myapplication.presentation.screens.splashScreen.SplashScreen
 import com.example.myapplication.presentation.viewmodel.HomeChallengesViewModel
 
@@ -35,7 +36,7 @@ fun NavController(activity: MainActivity ,
 
         NavHost(
             navController = navController,
-            startDestination = Routes.mainScreen,
+            startDestination = Routes.splashScreen,
         ){
             //SplashScreen
             composable(Routes.splashScreen){
@@ -79,7 +80,10 @@ fun NavController(activity: MainActivity ,
                 InformationUserPage(navController = navController)
             }
 
-
+            //Information User Page
+            composable(Routes.privacyPolicyPage){
+                PrivacyPolicyPage(navController = navController)
+            }
             //Update Challenge Page
             composable(
                 Routes.updateChallengePage,

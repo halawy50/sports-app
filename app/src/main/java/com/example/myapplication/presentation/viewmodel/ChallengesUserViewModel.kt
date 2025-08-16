@@ -10,6 +10,7 @@ import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
 import com.example.myapplication.domain.useCase.ChallengesUserUseCase
 import com.example.myapplication.utils.StateGetChallenges
 import com.example.myapplication.utils.StatePreviewDataUser
+import com.example.myapplication.utils.UpdateChallenge
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

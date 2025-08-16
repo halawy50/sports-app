@@ -2,12 +2,14 @@ package com.example.myapplication.presentation.di.auth_module
 
 import com.example.myapplication.data.apiService.AuthService
 import com.example.myapplication.data.repository.InformationUserRepositoryImpl
+import com.example.myapplication.data.repository.LogOutRepositoryImpl
 import com.example.myapplication.data.repository.LoginRepositoryImpl
 import com.example.myapplication.data.repository.RegisterRepositoryImpl
 import com.example.myapplication.data.repository.ResetPasswordRepositoryImpl
 import com.example.myapplication.data.repository.SendOTPRepositoryImpl
 import com.example.myapplication.data.repository.VerifyCodeRepositoryImpl
 import com.example.myapplication.domain.repository.InformationUserRepository
+import com.example.myapplication.domain.repository.LogOutRepository
 import com.example.myapplication.domain.repository.LoginRepository
 import com.example.myapplication.domain.repository.RegisterRepository
 import com.example.myapplication.domain.repository.ResetPasswordRepository
@@ -63,5 +65,12 @@ object RepositoryAuthModule {
     @Singleton
     fun provideInformationUserRepository(authService: AuthService): InformationUserRepository {
         return InformationUserRepositoryImpl(authService = authService)
+    }
+
+    //LogOut Repository
+    @Provides
+    @Singleton
+    fun provideLogOutRepository(authService: AuthService): LogOutRepository {
+        return LogOutRepositoryImpl(authService = authService)
     }
 }

@@ -57,7 +57,6 @@ interface ChallengeService {
     ): Response<PreviewDataUser>
 
 
-
     @GET("challenges_user/{user_id}/{page}")
     suspend fun getChallengesUser(
         @Path("user_id") userId: String,

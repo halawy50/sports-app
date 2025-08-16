@@ -1,5 +1,5 @@
 package com.example.myapplication.presentation.constant
 
 object BaseUrl {
-    const val baseUrl = "http://192.168.1.3:8080/"
+    const val baseUrl = "https://anychallenger-fbda9ed74e45.herokuapp.com//"
 }

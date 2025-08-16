@@ -11,14 +11,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myapplication.presentation.components.HideStatusBar
 import com.example.myapplication.presentation.components.ItemOnBoarding
 import com.example.myapplication.presentation.constant.routes.Routes
 import com.example.myapplication.presentation.constant.onBoardingList
+import com.example.myapplication.presentation.viewmodel.LocalManagerViewModel
 
 @Composable
-fun OnBoardingScreen(activity: Activity, navController: NavController , padding: PaddingValues){
+fun OnBoardingScreen(
+    activity: Activity,
+    navController: NavController,
+    padding: PaddingValues,
+    localManagerViewModel: LocalManagerViewModel = hiltViewModel()
+
+){
 
     val context = LocalContext.current
 
@@ -41,6 +49,9 @@ fun OnBoardingScreen(activity: Activity, navController: NavController , padding:
                 pagerState = state,
                 padding = padding,
                 onFinish = {
+
+                    localManagerViewModel.localManagerObserve.setIsFirstTimeLaunch(true)
+
                     navController.navigate(Routes.authScreen){
                         popUpTo(Routes.onBoardingScreen){inclusive = true}
                     }

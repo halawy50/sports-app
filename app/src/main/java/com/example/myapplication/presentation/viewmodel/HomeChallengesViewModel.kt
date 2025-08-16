@@ -1,26 +1,18 @@
 package com.example.myapplication.presentation.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.data.local.TokenManager
-import com.example.myapplication.domain.model.InformationUser
 import com.example.myapplication.domain.model.challenge_model.Challenge
 import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
 import com.example.myapplication.domain.model.challenge_model.FilterRequest
-import com.example.myapplication.domain.model.challenge_model.ResponseData
-import com.example.myapplication.domain.useCase.DeleteChallengeUseCase
 import com.example.myapplication.domain.useCase.HomeChallengesUseCase
-import com.example.myapplication.domain.useCase.InformationUserUseCase
 import com.example.myapplication.utils.GlobalState
 import com.example.myapplication.utils.StateGetChallenges
-import com.example.persentation.domain.data.post_model.FilterResponse
+import com.example.myapplication.utils.UpdateChallenge
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeChallengesViewModel @Inject constructor(
     private val homeChallengesUseCase: HomeChallengesUseCase,
-):UpdateChallenge , ViewModel() {
+): UpdateChallenge, ViewModel() {
 
     private val _challenges = MutableStateFlow<List<Challenge>>(emptyList())
     val challenges: StateFlow<List<Challenge>> = _challenges
@@ -209,30 +201,29 @@ class HomeChallengesViewModel @Inject constructor(
     override fun updateChallenge(challengeID: String, challengeRequest: ChallengeRequest): Boolean {
         var updated = false
 
-        _challenges.update { challenges ->
-            challenges.map { item ->
-                if (item.challengeID == challengeID) {
-                    updated = true
-                    item.copy(
-                        description = challengeRequest.descriptionPost,
-                        club = challengeRequest.club,
-                        whatsUpNumber = challengeRequest.whatsUpNumber,
-                        gender = challengeRequest.gender,
-                        team = challengeRequest.team,
-                        governorate = challengeRequest.governorate,
-                        city = challengeRequest.city,
-                    )
-                } else {
-                    item // مهم ترجع العنصر كما هو إذا لم ينطبق الشرط
-                }
+        fun updateItem(item: Challenge): Challenge {
+            return if (item.challengeID == challengeID) {
+                updated = true
+                item.copy(
+                    description = challengeRequest.descriptionPost,
+                    club = challengeRequest.club,
+                    whatsUpNumber = challengeRequest.whatsUpNumber,
+                    gender = challengeRequest.gender,
+                    team = challengeRequest.team,
+                    governorate = challengeRequest.governorate,
+                    city = challengeRequest.city,
+                )
+            } else {
+                item
             }
         }
+
+        _challengesFilter.update { challenges -> challenges.map(::updateItem) }
+        _challenges.update { challenges -> challenges.map(::updateItem) }
 
         return updated
     }
 
-    fun toggleFilter(isFilter : Boolean){
-    }
 
     fun resetFilter(){
         viewModelScope.launch {
@@ -267,7 +258,7 @@ class HomeChallengesViewModel @Inject constructor(
             try {
                 Log.d("Filter Challenge" , "Loading")
                 if (_currentPageFilter.value > _totalPageFilter.value) {
-                    _stateFilter.value = GlobalState.READY
+                    _stateFilter.value = GlobalState.SUCCESS
                     return@launch
                 }
                 Log.d("Filter Challenge" , "Loading1")
@@ -294,7 +285,7 @@ class HomeChallengesViewModel @Inject constructor(
 
                     _currentPageFilter.value = _currentPageFilter.value + 1
 
-                    _stateFilter.value = GlobalState.READY
+                    _stateFilter.value = GlobalState.SUCCESS
 
                 }else{
                     Log.d("Filter Challenge" , "Empty")
@@ -305,7 +296,7 @@ class HomeChallengesViewModel @Inject constructor(
             }catch (e: Exception){
                 Log.d("Filter Challenge" , "Error")
 
-                _stateFilter.value = GlobalState.Error
+                _stateFilter.value = GlobalState.ERROR
             }
 
         }

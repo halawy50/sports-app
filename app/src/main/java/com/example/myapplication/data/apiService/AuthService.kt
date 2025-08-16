@@ -1,6 +1,7 @@
 package com.example.myapplication.data.apiService
 
 import com.example.myapplication.domain.model.InformationUser
+import com.example.myapplication.domain.model.challenge_model.ResponseData
 import com.example.myapplication.domain.model.generate_otp.GenerateOTPRequest
 import com.example.myapplication.domain.model.generate_otp.GenerateOTPResponse
 import com.example.myapplication.domain.model.login_model.LoginRequest
@@ -15,7 +16,6 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -36,8 +36,8 @@ interface AuthService {
     //Login
     @POST("log_out")
     suspend fun logOut(
-        @Header("Authorization") token: String
-    ): Response<LoginResponse>
+        @Header("Authorization") refreshToken: String
+    ): Response<ResponseData>
 
     //SendOTP
     @POST("sendOTP")
@@ -62,6 +62,5 @@ interface AuthService {
     suspend fun informationUser(
         @Path("user_id") userId: String
     ): Response<InformationUser>
-
 
 }

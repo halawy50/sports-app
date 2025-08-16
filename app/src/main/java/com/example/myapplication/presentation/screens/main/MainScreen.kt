@@ -44,6 +44,7 @@ import com.example.myapplication.presentation.viewmodel.CityAndGovernorateViewMo
 import com.example.myapplication.presentation.viewmodel.DeleteChallengeViewModel
 import com.example.myapplication.presentation.viewmodel.FilterViewModel
 import com.example.myapplication.presentation.viewmodel.HomeChallengesViewModel
+import com.example.myapplication.presentation.viewmodel.LogOutViewModel
 import com.example.myapplication.presentation.viewmodel.MainScreenViewModel
 import com.example.myapplication.ui.theme.white
 
@@ -55,7 +56,8 @@ fun MainScreen(
     navController: NavController,
     homeChallengesViewModel: HomeChallengesViewModel,
     cityAndGovernorateViewModel: CityAndGovernorateViewModel = hiltViewModel(),
-    filterViewModel: FilterViewModel = hiltViewModel()
+    filterViewModel: FilterViewModel = hiltViewModel(),
+    logOutViewModel: LogOutViewModel = hiltViewModel()
 
 ){
 
@@ -139,6 +141,7 @@ fun MainScreen(
                 homeChallengesViewModel = homeChallengesViewModel,
                 cityAndGovernorateViewModel = cityAndGovernorateViewModel,
                 filterViewModel = filterViewModel,
+                logOutViewModel = logOutViewModel
             )
     }
 }
@@ -151,6 +154,7 @@ fun ContentScree(modifier: Modifier,
                  homeChallengesViewModel: HomeChallengesViewModel,
                  cityAndGovernorateViewModel: CityAndGovernorateViewModel,
                  filterViewModel: FilterViewModel,
+                 logOutViewModel: LogOutViewModel
 
 
 ){
@@ -166,7 +170,7 @@ fun ContentScree(modifier: Modifier,
 
                 )
 //                1-> MessagePage()
-                1-> SettingPage(navController = navController)
+                1-> SettingPage(navController = navController , logOutViewModel = logOutViewModel)
         }
     }
 }

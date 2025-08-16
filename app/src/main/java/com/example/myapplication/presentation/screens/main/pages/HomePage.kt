@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -92,7 +91,7 @@ fun HomePage(
                     if (isFilter){
                         val isLoading = stateFilter == GlobalState.LOADING
 
-                        if (!isLoading && stateFilter != GlobalState.EMPTY && stateFilter != GlobalState.Error && lastVisibleIndex != null && lastVisibleIndex >= totalItems - threshold) {
+                        if (!isLoading && stateFilter != GlobalState.EMPTY && stateFilter != GlobalState.ERROR && lastVisibleIndex != null && lastVisibleIndex >= totalItems - threshold) {
                             homeChallengesViewModel.filterChallenges()
                         }
                     }else{
@@ -187,7 +186,7 @@ fun HomePage(
                                         }
                                     }
 
-                                    GlobalState.Error -> {
+                                    GlobalState.ERROR -> {
                                         Column {
                                             Text(
                                                 stringResource(R.string.something_wrong),
@@ -335,11 +334,17 @@ fun HomePage(
             BottomSheetComponent(
                 filterViewModel = filterViewModel,
                 showBottomSheet = showSheet,
+                isFilter = isFilter,
                 onDismiss = { showSheet = false },
                 cityAndGovernorateViewModel = cityAndGovernorateViewModel,
                 onClickFilter = { filterRequest ->
                     showSheet = false
                     homeChallengesViewModel.setInitialFilter(filterRequest = filterRequest)
+                },
+                cancelFilter = {
+                    homeChallengesViewModel.discordFilter()
+                    filterViewModel.resetToDefaultFilter()
+                    showSheet = false
                 }
             )
 

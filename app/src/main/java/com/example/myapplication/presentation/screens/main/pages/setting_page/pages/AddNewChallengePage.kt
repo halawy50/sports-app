@@ -44,6 +44,7 @@ import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
 import com.example.myapplication.presentation.components.AlertDialog
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonFill
 import com.example.myapplication.presentation.components.HeaderText
+import com.example.myapplication.presentation.components.HeaderTopBar
 import com.example.myapplication.presentation.components.InputsComponents.DropDawnSelect
 import com.example.myapplication.presentation.components.InputsComponents.InputNumber
 import com.example.myapplication.presentation.components.InputsComponents.InputText
@@ -153,36 +154,17 @@ fun AddNewChallengePage(
             )
             {
 
-
-                Spacer(Modifier.height(20.dp))
-
                 //Header
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    HeaderText(text = stringResource(R.string.add_new_challenge))
-
-                    IconButton(onClick = {
+                HeaderTopBar(
+                    onClick = {
                         isBack = true
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            modifier = Modifier.graphicsLayer(rotationZ = 180f)
-
-                        )
-                    }
-
-                } //end Header
+                    },
+                    title = stringResource(R.string.add_new_challenge)
+                )//end Header
 
                 Column(
                     modifier = Modifier.padding(end = 10.dp)
                 ) {
-
-                    Spacer(Modifier.height(20.dp))
 
                     // Input Describe
                     LongText(

@@ -40,6 +40,15 @@ class FilterViewModel @Inject constructor() : ViewModel() {
     private val _selectIdOrder = MutableStateFlow(0)
     val selectIdOrder: StateFlow<Int> = _selectIdOrder.asStateFlow()
 
+    fun resetToDefaultFilter() {
+        _selectedCities.value = emptyList()
+        _selectedGender.value = emptyList()
+        _selectedTeam.value = emptyList()
+        _selectIdGovernorate.value = ""
+        _selectIdOrder.value = 0
+    }
+
+
     fun setGovernorates(list: List<EntryModel>) {
         _listEntryModelGovernorate.value = list
     }
@@ -74,7 +83,7 @@ class FilterViewModel @Inject constructor() : ViewModel() {
             gendersIdsList = _selectedGender.value.map { it.index },
             teamList = _selectedTeam.value.map {
                 val data = it.index + 1
-                Log.d("FuckYou", data.toString())
+                Log.d("FilterRequest", data.toString())
                 data
             },
             sortOrder = _selectIdOrder.value == 0

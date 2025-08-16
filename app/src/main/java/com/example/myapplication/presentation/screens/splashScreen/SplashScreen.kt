@@ -16,6 +16,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,26 +28,62 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myapplication.MainActivity
 import com.example.myapplication.R
 import com.example.myapplication.presentation.components.HideStatusBar
 import com.example.myapplication.presentation.constant.routes.Routes
+import com.example.myapplication.presentation.viewmodel.LocalManagerViewModel
+import com.example.myapplication.presentation.viewmodel.SplashScreenViewModel
 import com.example.myapplication.ui.theme.almarai_extrabold
 import com.example.myapplication.ui.theme.black
 import com.example.myapplication.ui.theme.blue
+import com.example.myapplication.utils.GlobalState
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(activity: MainActivity , navController: NavController){
+fun SplashScreen(
+    activity: MainActivity ,
+    navController: NavController,
+    splashScreenViewModel: SplashScreenViewModel = hiltViewModel(),
+    localManagerViewModel: LocalManagerViewModel = hiltViewModel()
+){
 
     var visableCirclerProgress by remember { mutableStateOf(false) }
     var visableLogo by remember { mutableStateOf(false) }
     var visableTitle by remember { mutableStateOf(false) }
+    val loginState by splashScreenViewModel.stateLogin.collectAsState()
 
     HideStatusBar(activity , textIsDark = true)
 
 
+
+    LaunchedEffect(loginState) {
+        when(loginState){
+
+            GlobalState.SUCCESS -> {
+                navController.navigate(Routes.mainScreen){
+                    popUpTo(Routes.splashScreen){inclusive = true}
+                }
+            }
+
+            GlobalState.ERROR -> {
+                if (localManagerViewModel.localManagerObserve.getIsFirstTimeLaunch() == true){
+                    navController.navigate(Routes.authScreen){
+                        popUpTo(Routes.splashScreen){inclusive = true}
+                    }
+                }else{
+                    delay(4000)
+                    navController.navigate(Routes.changeLanguageScreen){
+                        popUpTo(Routes.splashScreen){inclusive = true}
+                    }
+                }
+            }
+
+            else -> {}
+        }
+    }
 
     LaunchedEffect(Unit) {
         delay(300)
@@ -56,9 +93,6 @@ fun SplashScreen(activity: MainActivity , navController: NavController){
         delay(500)
         visableCirclerProgress = true
         delay(3000)
-        navController.navigate(Routes.changeLanguageScreen){
-            popUpTo(Routes.splashScreen){inclusive = true}
-        }
     }
 
 

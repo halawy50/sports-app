@@ -46,6 +46,7 @@ import com.example.myapplication.R
 import com.example.myapplication.domain.model.challenge_model.Challenge
 import com.example.myapplication.presentation.constant.ChangeLanguage
 import com.example.myapplication.presentation.viewmodel.TokenManagerViewModel
+import com.example.myapplication.ui.theme.almarai_light
 import com.example.myapplication.ui.theme.almarai_regular
 import com.example.myapplication.ui.theme.black
 import com.example.myapplication.ui.theme.gray
@@ -222,7 +223,9 @@ fun ItemChallenger(
         Text(text = challenge.description ,
                  style = TextStyle(
                     fontSize = 16.sp,
-                     lineHeight = 28.sp
+                     lineHeight = 28.sp,
+                     fontFamily = almarai_light,
+                     color = black
                 )
         )//end description post
 

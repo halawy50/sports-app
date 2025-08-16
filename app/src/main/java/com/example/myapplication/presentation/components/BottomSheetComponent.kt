@@ -4,6 +4,7 @@ import MultiSelectDropdown
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -27,6 +28,7 @@ import com.example.myapplication.utils.StateGovernorate
 import com.example.myapplication.R
 import com.example.myapplication.domain.model.challenge_model.FilterRequest
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonFill
+import com.example.myapplication.presentation.components.ButtonsComponents.ButtonWithBorder
 import com.example.myapplication.presentation.constant.challengeTeamList
 import com.example.myapplication.presentation.constant.genderList
 import com.example.myapplication.presentation.constant.orderList
@@ -39,14 +41,15 @@ fun BottomSheetComponent(
     filterViewModel: FilterViewModel,
     showBottomSheet: Boolean = false,
     onDismiss: () -> Unit,
+    isFilter: Boolean = false,
     cityAndGovernorateViewModel: CityAndGovernorateViewModel,
-    onClickFilter: (FilterRequest) -> Unit
+    onClickFilter: (FilterRequest) -> Unit,
+    cancelFilter: () -> Unit,
+
 ) {
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val listEntryModelGovernorate by filterViewModel.listEntryModelGovernorate.collectAsState()
-    val listEntryModelCities by filterViewModel.listEntryModelCities.collectAsState()
     val selectedCities by filterViewModel.selectedCities.collectAsState()
     val selectedTeam by filterViewModel.selectedTeam.collectAsState()
     val selectedGender by filterViewModel.selectedGender.collectAsState()
@@ -94,6 +97,7 @@ fun BottomSheetComponent(
                     // Order Section
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         DropDawnSelect(
+                            selectUseIndex = selectIdOrder,
                             list = orderList(),
                             selectFirst = true,
                             label = stringResource(R.string.order),
@@ -210,11 +214,34 @@ fun BottomSheetComponent(
                         )
                     }
 
-                    // Button Section
-                    ButtonFill(
-                        onClick = { onClickFilter(filterViewModel.buildFilterRequest()) },
-                        label = stringResource(R.string.filter)
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth().height(50.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+
+                        // Button Section Filter
+                        ButtonFill(
+                            modifier = Modifier.weight(0.5f).fillMaxHeight(),
+                            onClick = { onClickFilter(filterViewModel.buildFilterRequest()) },
+                            label = stringResource(R.string.filter)
+                        )
+
+                        if (isFilter)
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                        //Cancel Filter
+                        if (isFilter)
+                        ButtonWithBorder(
+                            modifier = Modifier.weight(0.5f).fillMaxHeight(),
+                            onClick = cancelFilter,
+                            text = stringResource(R.string.cancel_button)
+                        )
+
+
+
+
+                    }
+
                 }
             }
         }

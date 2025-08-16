@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -60,44 +61,37 @@ fun HeaderHome(
 
             // الرقم أعلى الصندوق بالكامل
             Box(
-                modifier = Modifier
-                    .weight(0.1f)
-                    .height(40.dp) // ارتفاع الصندوق الرمادي
+                modifier = Modifier,
+                contentAlignment = Alignment.CenterEnd
             ) {
-                // الصندوق الرمادي مع أيقونة الفلتر
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(5.dp))
-//                        .background(gray)
-                ) {
+
                     IconButton(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.size(40.dp),
                         onClick = onClick
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.filters),
-                            contentDescription = stringResource(R.string.filter),
-                            tint = gray
-                        )
+                            Icon(
+                                painter = painterResource(id = R.drawable.filters),
+                                contentDescription = stringResource(R.string.filter),
+                                tint = gray
+                            )
                     }
-                }
 
-                if (isFilter)
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .background(blue, RoundedCornerShape(50))
-                        .size(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        "1",
-                        color = white,
-                        style = TextStyle(fontSize = 10.sp),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                    if (isFilter)
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .background(blue, RoundedCornerShape(50))
+                                .size(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "1",
+                                color = white,
+                                style = TextStyle(fontSize = 10.sp),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+
             }
 
     }

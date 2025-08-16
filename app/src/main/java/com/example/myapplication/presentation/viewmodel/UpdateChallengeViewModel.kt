@@ -117,14 +117,14 @@ class UpdateChallengeViewModel @Inject constructor(
                 val result = updateChallengeUseCase.getSingleChallenge(challengeID = challengeID)
 
                 if (result.isSuccessful && result.code() == 200 && result.body() != null){
-                    _stateGetChallenge.value = GlobalState.READY
+                    _stateGetChallenge.value = GlobalState.SUCCESS
                     _challenge.value = result.body()
                 }else{
                     _stateGetChallenge.value = GlobalState.EMPTY
                 }
 
             }catch (e: Exception){
-                _stateGetChallenge.value = GlobalState.Error
+                _stateGetChallenge.value = GlobalState.ERROR
             }
 
         }

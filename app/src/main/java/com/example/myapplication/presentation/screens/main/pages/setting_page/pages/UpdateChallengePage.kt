@@ -1,21 +1,14 @@
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -32,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -45,7 +37,7 @@ import com.example.myapplication.domain.model.WrongVerify
 import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
 import com.example.myapplication.presentation.components.AlertDialog
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonFill
-import com.example.myapplication.presentation.components.HeaderText
+import com.example.myapplication.presentation.components.HeaderTopBar
 import com.example.myapplication.presentation.components.InputsComponents.DropDawnSelect
 import com.example.myapplication.presentation.components.InputsComponents.InputNumber
 import com.example.myapplication.presentation.components.InputsComponents.InputText
@@ -56,9 +48,7 @@ import com.example.myapplication.presentation.constant.ChangeLanguage
 import com.example.myapplication.presentation.constant.challengeTeamList
 import com.example.myapplication.presentation.constant.genderList
 import com.example.myapplication.presentation.constant.routes.Routes
-import com.example.myapplication.presentation.viewmodel.ChallengesUserViewModel
 import com.example.myapplication.utils.GlobalState
-import com.example.myapplication.utils.StateAddNewChallenge
 import com.example.myapplication.utils.StateCities
 import com.example.myapplication.utils.StateGovernorate
 import com.example.myapplication.utils.StateUpdateChallenge
@@ -148,7 +138,7 @@ fun UpdateChallengePage(
 
     // تحديث المحافظات بعد جلب المحافظات والتحدي
     LaunchedEffect(governorateState, challengeState) {
-        if (governorateState is StateGovernorate.Success && challengeState == GlobalState.READY) {
+        if (governorateState is StateGovernorate.Success && challengeState == GlobalState.SUCCESS) {
             val govList = (governorateState as StateGovernorate.Success).data
             val chal = challenge
 
@@ -208,7 +198,7 @@ fun UpdateChallengePage(
     LaunchedEffect(isLoadingCities, challengeState, governorateState) {
         isLoading = when {
             governorateState !is StateGovernorate.Success -> true
-            challengeState != GlobalState.READY -> true
+            challengeState != GlobalState.SUCCESS -> true
             isLoadingCities -> true
             else -> false
         }
@@ -258,35 +248,17 @@ fun UpdateChallengePage(
                     .imePadding()
             )
             {
-                Spacer(Modifier.height(20.dp))
-
                 //Header
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    HeaderText(text = stringResource(R.string.update_challenge))
-
-                    IconButton(onClick = {
+                HeaderTopBar(
+                    onClick = {
                         isBack = true
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            modifier = Modifier.graphicsLayer(rotationZ = 180f)
-
-                        )
-                    }
-
-                } //end Header
+                    },
+                    title = stringResource(R.string.update_challenge)
+                )//end Header
 
                 Column(
                     modifier = Modifier.padding(end = 10.dp)
                 ) {
-
-                    Spacer(Modifier.height(20.dp))
 
                     // Input Describe
                     LongText(
@@ -555,7 +527,7 @@ fun UpdateChallengePage(
                 LoadingDialog()
             }
 
-            if (challengeState == GlobalState.Error){
+            if (challengeState == GlobalState.ERROR){
                 AlertDialog(
                     messageAlert = stringResource(R.string.check_internet),
                     onClickButtonOne = {

@@ -2,9 +2,10 @@ package com.example.myapplication.data.local
 
 import android.content.Context
 import androidx.core.content.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class TokenManager @Inject constructor(private val context: Context) {
+class TokenManager @Inject constructor(@ApplicationContext private val context: Context) {
 
     fun saveLoginToken(userId: String, refreshToken: String, accessToken: String) {
         context.getSharedPreferences("TOKEN_MANAGER", Context.MODE_PRIVATE)

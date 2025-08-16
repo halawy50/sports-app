@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Any Challenger?</string>
+    <string name="app_name">Any Challenger</string>
     <string name="onboarding_title1">Explore Teams Around You</string>
     <string name="onboarding_description1">Browse nearby teams, meet their members, levels, and activities — choose who to challenge.</string>
 
@@ -157,5 +157,65 @@
     <string name="select_gender">Select Gender</string>
     <string name="order">Challenges Order</string>
     <string name="no_challenges">No challenges available</string>
+    <string name="logout_success">Logged out successfully</string>
+    <string name="logout_loading">Logging you out...</string>
+    <string name="logout_success_redirect">Logged out successfully... Redirecting to login page</string>
 
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="last_update">Last Update: August 15, 2025</string>
+
+    <string name="privacy_section1_title">1. Introduction</string>
+    <string name="privacy_section1_text">
+        This Privacy Policy explains how we collect, use, and protect your information in accordance with Google Play Developer Policy, GDPR, and CCPA requirements.
+    </string>
+
+    <string name="privacy_section2_title">2. Information We Collect</string>
+    <string name="privacy_section2_text">
+        We may collect personal information (such as name, email) and non-personal information (such as device data) strictly for providing and improving our services.
+    </string>
+
+    <string name="privacy_section3_title">3. Legal Basis for Data Collection</string>
+    <string name="privacy_section3_text">
+        We process your data based on your consent, contractual necessity, or legal obligation, as required under GDPR and CCPA regulations.
+    </string>
+
+    <string name="privacy_section4_title">4. How We Use Your Information</string>
+    <string name="privacy_section4_text">
+        Your information is used solely for app functionality, improving user experience, and complying with legal requirements.
+    </string>
+
+    <string name="privacy_section5_title">5. Data Sharing and Disclosure</string>
+    <string name="privacy_section5_text">
+        We do not sell your personal data. We may share it only with trusted partners or authorities when legally required.
+    </string>
+
+    <string name="privacy_section6_title">6. Data Storage and Security</string>
+    <string name="privacy_section6_text">
+        We implement appropriate technical and organizational measures to safeguard your data against unauthorized access or misuse.
+    </string>
+
+    <string name="privacy_section7_title">7. Your Rights</string>
+    <string name="privacy_section7_text">
+        You have the right to access, correct, or delete your data, and to withdraw consent at any time as per GDPR/CCPA.
+    </string>
+
+    <string name="privacy_section8_title">8. Children\'s Privacy</string>
+    <string name="privacy_section8_text">
+        Our app does not knowingly collect personal information from children under 13. If we discover such data, we delete it immediately.
+    </string>
+
+    <string name="privacy_section9_title">9. Third-Party Services</string>
+    <string name="privacy_section9_text">
+        We may use third-party services (such as analytics) that adhere to Google Play and GDPR/CCPA requirements.
+    </string>
+
+    <string name="privacy_section10_title">10. Changes to This Policy</string>
+    <string name="privacy_section10_text">
+        We may update this policy from time to time. Significant changes will be communicated within the app or via email.
+    </string>
+
+    <string name="privacy_section11_title">11. Contact Us</string>
+    <string name="privacy_section11_text">
+        If you have any questions about this Privacy Policy, you can contact us at: support@example.com
+    </string>
 </resources>

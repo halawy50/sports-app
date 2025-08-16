@@ -1,4 +1,4 @@
-package com.example.myapplication.presentation.viewmodel
+package com.example.myapplication.utils
 
 import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
 

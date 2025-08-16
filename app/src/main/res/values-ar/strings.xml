@@ -159,5 +159,68 @@
     <string name="select_gender">اختر الجنس</string>
     <string name="order">ترتيب التحديات</string>
     <string name="no_challenges">لا يوجد أي تحديات</string>
+    <string name="logout_success">تم تسجيل الخروج بنجاح</string>
+    <string name="logout_loading">جاري تسجيل خروجك</string>
+    <string name="logout_success_redirect">تم تسجيل خروجك بنجاح... جاري تحويلك لصفحة التسجيل</string>
+
+
+    <string name="privacy_policy_title">سياسة الخصوصية</string>
+    <string name="last_update">آخر تحديث: 15 أغسطس 2025</string>
+
+    <string name="privacy_section1_title">1. المقدمة</string>
+    <string name="privacy_section1_text">
+        توضح سياسة الخصوصية هذه كيفية جمع واستخدام وحماية معلوماتك وفقًا لسياسة مطوري Google Play ومتطلبات GDPR و CCPA.
+    </string>
+
+    <string name="privacy_section2_title">2. المعلومات التي نجمعها</string>
+    <string name="privacy_section2_text">
+        قد نقوم بجمع المعلومات الشخصية (مثل الاسم والبريد الإلكتروني) والمعلومات غير الشخصية (مثل بيانات الجهاز) فقط لغرض تقديم خدماتنا وتحسينها.
+    </string>
+
+    <string name="privacy_section3_title">3. الأساس القانوني لجمع البيانات</string>
+    <string name="privacy_section3_text">
+        نعالج بياناتك بناءً على موافقتك، أو ضرورة التعاقد، أو الالتزام القانوني، كما هو مطلوب بموجب لوائح GDPR و CCPA.
+    </string>
+
+    <string name="privacy_section4_title">4. كيفية استخدام معلوماتك</string>
+    <string name="privacy_section4_text">
+        تُستخدم معلوماتك فقط لوظائف التطبيق وتحسين تجربة المستخدم والامتثال للمتطلبات القانونية.
+    </string>
+
+    <string name="privacy_section5_title">5. مشاركة البيانات والإفصاح</string>
+    <string name="privacy_section5_text">
+        نحن لا نبيع بياناتك الشخصية، وقد نشاركها فقط مع شركاء موثوقين أو سلطات مختصة عند الضرورة القانونية.
+    </string>
+
+    <string name="privacy_section6_title">6. تخزين البيانات وأمانها</string>
+    <string name="privacy_section6_text">
+        نطبق تدابير تقنية وتنظيمية مناسبة لحماية بياناتك من الوصول أو الاستخدام غير المصرح به.
+    </string>
+
+    <string name="privacy_section7_title">7. حقوقك</string>
+    <string name="privacy_section7_text">
+        لديك الحق في الوصول إلى بياناتك أو تصحيحها أو حذفها، وسحب موافقتك في أي وقت وفقًا لـ GDPR و CCPA.
+    </string>
+
+    <string name="privacy_section8_title">8. خصوصية الأطفال</string>
+    <string name="privacy_section8_text">
+        لا يقوم تطبيقنا بجمع معلومات شخصية من الأطفال دون سن 13 عامًا. إذا اكتشفنا مثل هذه البيانات، فسنقوم بحذفها فورًا.
+    </string>
+
+    <string name="privacy_section9_title">9. خدمات الطرف الثالث</string>
+    <string name="privacy_section9_text">
+        قد نستخدم خدمات طرف ثالث (مثل التحليلات) التي تلتزم بسياسة Google Play ومتطلبات GDPR و CCPA.
+    </string>
+
+    <string name="privacy_section10_title">10. التغييرات على هذه السياسة</string>
+    <string name="privacy_section10_text">
+        قد نقوم بتحديث هذه السياسة من وقت لآخر. سيتم إبلاغك بالتغييرات الجوهرية داخل التطبيق أو عبر البريد الإلكتروني.
+    </string>
+
+    <string name="privacy_section11_title">11. اتصل بنا</string>
+    <string name="privacy_section11_text">
+        إذا كان لديك أي أسئلة حول سياسة الخصوصية هذه، يمكنك التواصل معنا عبر: support@example.com
+    </string>
+
 
 </resources>

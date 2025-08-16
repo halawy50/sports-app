@@ -2,13 +2,10 @@ package com.example.myapplication.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.data.local.LocalManager
-import com.example.myapplication.data.local.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class TokenManagerViewModel @Inject constructor(
-    private val tokenManager: TokenManager,
-    ): ViewModel() {
-    val tokenManagerObserve = tokenManager
+class LocalManagerViewModel @Inject constructor(private val localManager: LocalManager): ViewModel() {
+    val localManagerObserve = localManager
 }

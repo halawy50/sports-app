@@ -11,6 +11,7 @@ object Routes {
     val updateChallengePage = "UpdateChallengePage/{challengeID}"
     val changeLanguagePage = "ChangeLanguagePage"
     val informationUserPage = "InformationUserPage"
+    val privacyPolicyPage = "PrivacyPolicyPage"
 
 
     fun challengeID(challengeID: String): String {

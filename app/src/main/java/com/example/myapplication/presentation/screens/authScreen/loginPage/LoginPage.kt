@@ -38,6 +38,7 @@ import androidx.core.content.edit
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myapplication.R
+import com.example.myapplication.data.local.TokenManager
 import com.example.myapplication.domain.model.WrongVerify
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonFill
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonWithBorder
@@ -61,6 +62,7 @@ fun LoginPage(
     appNavController:NavController,
     loginViewModel: LoginViewModel = hiltViewModel()
 ){
+
 
     // Input states
     var mutableEmail by remember { mutableStateOf("") }
@@ -205,17 +207,11 @@ fun LoginPage(
 
                 LoadingDialog(stringResource(id = R.string.login_success_message))
 
-                LaunchedEffect(Unit) {
+                LaunchedEffect(true) {
                     snackBarHostState.showSnackbar(
                         if (ChangeLanguage.getSavedLanguage(context)=="ar") state.data.messageAr
                         else state.data.messageEn
                     )
-                    val prefs = context.getSharedPreferences("token", Context.MODE_PRIVATE)
-
-                    prefs.edit {
-                        putString("access_token", state.data.accessToken)
-                            .putString("refresh_token", state.data.refreshToken)
-                    }
 
                     appNavController.navigate(Routes.mainScreen){
                         popUpTo(0){inclusive = true}

@@ -35,6 +35,7 @@ import androidx.navigation.NavController
 import com.example.myapplication.R
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonFill
 import com.example.myapplication.presentation.components.HeaderText
+import com.example.myapplication.presentation.components.HeaderTopBar
 import com.example.myapplication.presentation.components.HideStatusBar
 import com.example.myapplication.presentation.constant.ChangeLanguage
 import com.example.myapplication.presentation.constant.routes.Routes
@@ -53,39 +54,18 @@ fun LanguagePage(
 
     Column(
             modifier = Modifier
-                .padding(padding)
+                .padding(padding).padding(horizontal = 15.dp)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column{
-                Spacer(Modifier.height(20.dp))
-
-
                 //Header
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(start = 15.dp , end = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    HeaderText(text = stringResource(R.string.choose_language))
-                    IconButton(onClick = {
+                HeaderTopBar(
+                    onClick = {
                         navController.popBackStack()
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            modifier = Modifier.graphicsLayer(rotationZ = 180f)
-                        )
-                    }
+                    },
+                    title = stringResource(R.string.choose_language)
+                )//end Header
 
-                } //end Header
-
-                Spacer(Modifier.height(15.dp))
-
-                Box(
-                    modifier = Modifier.padding(horizontal = 15.dp)
-                ){
-                    Column {
+                Column {
                         languages.forEach { (langCode, langName) ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -119,9 +99,6 @@ fun LanguagePage(
                             }
                         }
                     }
-                }
-            }
-
-
         }
+
 }

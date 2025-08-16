@@ -10,10 +10,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.myapplication.domain.model.EntryModel
 import com.example.myapplication.presentation.constant.ChangeLanguage
 import com.example.myapplication.ui.theme.white
 import com.example.myapplication.R
+import com.example.myapplication.ui.theme.almarai_light
+import com.example.myapplication.ui.theme.almarai_regular
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +58,7 @@ fun MultiSelectDropdown(
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor(),
-                label = { Text(label, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                label = { Text(label, maxLines = 1, overflow = TextOverflow.Ellipsis , fontFamily = almarai_light , fontSize = 12.sp) },
                 readOnly = true,
                 singleLine = true,
                 trailingIcon = {
@@ -95,7 +98,7 @@ fun MultiSelectDropdown(
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = stringResource(R.string.select_all),
-                                    style = MaterialTheme.typography.bodyMedium
+                                    fontFamily = almarai_regular
                                 )
                             }
                         },
@@ -130,7 +133,8 @@ fun MultiSelectDropdown(
                                         item.titleEn,
                                     style = MaterialTheme.typography.bodyMedium,
                                     maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontFamily = almarai_light
                                 )
                             }
                         },

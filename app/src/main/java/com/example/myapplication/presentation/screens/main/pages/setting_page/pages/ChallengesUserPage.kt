@@ -48,6 +48,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.example.myapplication.R
 import com.example.myapplication.presentation.components.AlertDialog
+import com.example.myapplication.presentation.components.HeaderTopBar
 import com.example.myapplication.presentation.components.LoadingDialog
 import com.example.myapplication.presentation.components.SnackBar
 import com.example.myapplication.presentation.constant.routes.Routes
@@ -112,35 +113,16 @@ fun ChallengesUserPage(
                 LazyColumn(state = listState) {
 
                     item {
-                        Spacer(Modifier.height(20.dp))
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-
-                            HeaderText(text = stringResource(R.string.my_challenges))
-
-                            IconButton(onClick = {
+                        //Header
+                        HeaderTopBar(
+                            onClick = {
                                 navController.popBackStack()
-                            }) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = null,
-                                    modifier = Modifier.graphicsLayer(rotationZ = 180f)
-
-                                )
-                            }
-
-                        }
-
-                        Spacer(Modifier.height(20.dp))
-
+                            },
+                            title = stringResource(R.string.my_challenges)
+                        )//end Header
 
                     }
-
-
 
                     itemsIndexed(allPosts) { index, item ->
                         Box(
