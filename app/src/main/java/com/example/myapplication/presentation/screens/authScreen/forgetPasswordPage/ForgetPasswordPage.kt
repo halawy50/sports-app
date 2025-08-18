@@ -74,7 +74,7 @@ fun ForgetPasswordPage(
 
             HeaderText(stringResource(R.string.forget_password), textAlign = TextAlign.Start)
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(10.dp))
 
             ParagraphText(stringResource(R.string.pagrapgh_forget_password), textAlign = TextAlign.Start)
 

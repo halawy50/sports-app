@@ -75,7 +75,7 @@ fun SplashScreen(
                     }
                 }else{
                     delay(4000)
-                    navController.navigate(Routes.changeLanguageScreen){
+                    navController.navigate(Routes.onBoardingScreen){
                         popUpTo(Routes.splashScreen){inclusive = true}
                     }
                 }

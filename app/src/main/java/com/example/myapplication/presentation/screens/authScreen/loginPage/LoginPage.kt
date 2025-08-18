@@ -106,7 +106,7 @@ fun LoginPage(
 
             HeaderText(text = stringResource(R.string.herader_welcome))
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(10.dp))
 
             ParagraphText(text = stringResource(R.string.paragraph_welcome))
 

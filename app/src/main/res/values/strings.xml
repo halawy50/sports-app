@@ -72,7 +72,8 @@
 
     <string name="loading_creating_account">Creating account...</string>
     <string name="success_registration">Registration successful</string>
-    <string name="account_created_success">Account created successfully. You will be redirected to the login page.</string>
+    <string name="account_created_success_to_login">Account created successfully. You will be redirected to the login page.</string>
+    <string name="account_created_success_to_home">Account created successfully. You will be redirected to the Home page.</string>
     <string name="loading_login">Logging in...</string>
     <string name="sending_otp">Sending code...</string>
 
@@ -218,4 +219,9 @@
     <string name="privacy_section11_text">
         If you have any questions about this Privacy Policy, you can contact us at: support@example.com
     </string>
+
+    <string name="skip">Skip</string>
+    <string name="language_toggle">عربي</string>
+
+
 </resources>

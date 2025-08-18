@@ -81,7 +81,7 @@ fun VerifyOTPPage(
         ) {
             HeaderText(stringResource(R.string.header_verify_otp), textAlign = TextAlign.Start)
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(10.dp))
 
             ParagraphText(stringResource(R.string.paragraph_verify_otp) + email, textAlign = TextAlign.Start)
 

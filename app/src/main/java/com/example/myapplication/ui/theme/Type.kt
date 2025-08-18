@@ -10,7 +10,7 @@ import com.example.myapplication.R
 
 
 val almarai_extrabold = FontFamily(
-    Font(R.font.almarai_extrabold , FontWeight.ExtraBold)
+    Font(R.font.ibm_bold , FontWeight.Bold)
 )
 
 val almarai_bold = FontFamily(
@@ -18,12 +18,12 @@ val almarai_bold = FontFamily(
 )
 
 val almarai_regular = FontFamily(
-    Font(R.font.almarai_regular , FontWeight.Normal)
+    Font(R.font.ibm_regular , FontWeight.Normal)
 )
 
 
 val almarai_light = FontFamily(
-    Font(R.font.almarai_light , FontWeight.Light)
+    Font(R.font.ibm_light , FontWeight.Light)
 )
 
 

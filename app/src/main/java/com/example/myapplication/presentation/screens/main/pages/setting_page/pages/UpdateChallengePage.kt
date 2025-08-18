@@ -47,6 +47,7 @@ import com.example.myapplication.presentation.components.SnackBar
 import com.example.myapplication.presentation.constant.ChangeLanguage
 import com.example.myapplication.presentation.constant.challengeTeamList
 import com.example.myapplication.presentation.constant.genderList
+import com.example.myapplication.presentation.constant.genderTeamList
 import com.example.myapplication.presentation.constant.routes.Routes
 import com.example.myapplication.utils.GlobalState
 import com.example.myapplication.utils.StateCities
@@ -121,7 +122,7 @@ fun UpdateChallengePage(
     var isProgress by remember { mutableStateOf(false) }
 
     // حالات اختيار فريق وجنس
-    val genderList = genderList()
+    val genderList = genderTeamList()
     val teamList = challengeTeamList()
 
     var mutableGender by remember { mutableStateOf(genderList.first()) }

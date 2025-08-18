@@ -3,7 +3,7 @@ package com.example.myapplication.presentation.di.challenge_module
 import com.example.myapplication.data.apiService.ChallengeService
 import com.example.myapplication.data.repository.AddNewChallengeRepositoryImpl
 import com.example.myapplication.data.repository.HomeChallengesRepositoryImpl
-import com.example.myapplication.data.repository.ChallengeUserRepositoryImpl
+import com.example.myapplication.data.repository.ChallengesUserRepositoryImpl
 import com.example.myapplication.data.repository.DeleteChallengeRepositoryImpl
 import com.example.myapplication.data.repository.UpdateChallengeRepositoryImpl
 import com.example.myapplication.domain.repository.AddNewChallengeRepository
@@ -31,7 +31,7 @@ object ChallengeRepositoryModule {
     @Provides
     @Singleton
     fun provideChallengesUserRepository(challengeService: ChallengeService): ChallengesUserRepository{
-        return ChallengeUserRepositoryImpl(challengeService = challengeService)
+        return ChallengesUserRepositoryImpl(challengeService = challengeService)
     }
 
     @Provides

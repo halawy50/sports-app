@@ -81,7 +81,7 @@ fun ResetPasswordPage(
 
             HeaderText(stringResource(R.string.header_new_password), textAlign = TextAlign.Start)
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(10.dp))
 
             ParagraphText(stringResource(R.string.pargraph_new_password), textAlign = TextAlign.Start)
 

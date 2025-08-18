@@ -1,5 +1,6 @@
 package com.example.myapplication.presentation.screens.authScreen.signUpPage
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,7 @@ import com.example.myapplication.domain.model.EntryModel
 import com.example.myapplication.domain.model.Gender
 import com.example.myapplication.domain.model.Governorate
 import com.example.myapplication.domain.model.WrongVerify
+import com.example.myapplication.domain.model.login_model.LoginRequest
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonFill
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonWithBorder
 import com.example.myapplication.presentation.components.LoadingDialog
@@ -48,18 +50,23 @@ import com.example.myapplication.presentation.components.SnackBar
 import com.example.myapplication.presentation.constant.ChangeLanguage
 import com.example.myapplication.presentation.constant.routes.RoutesAuth
 import com.example.myapplication.presentation.constant.genderList
+import com.example.myapplication.presentation.constant.routes.Routes
 import com.example.myapplication.presentation.viewmodel.CityAndGovernorateViewModel
+import com.example.myapplication.presentation.viewmodel.LoginViewModel
 import com.example.myapplication.utils.validate.validateSignUpInputs
 import com.example.myapplication.presentation.viewmodel.RegisterViewModel
 import com.example.myapplication.utils.StateCities
 import com.example.myapplication.utils.StateGovernorate
+import com.example.myapplication.utils.StateLogin
 import com.example.myapplication.utils.StateRegister
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun SignUpPage(
     authNavController: NavController,
     appNavController: NavController,
     registerViewModel: RegisterViewModel = hiltViewModel(),
+    loginViewModel: LoginViewModel = hiltViewModel(),
     cityAndGovernorateViewModel: CityAndGovernorateViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -72,6 +79,7 @@ fun SignUpPage(
 
     val scrollState = rememberScrollState()
     val stateSignUp by registerViewModel.state.collectAsState()
+    val stateLogIn by loginViewModel.state.collectAsState()
     // Input states
     var mutableFullName by remember { mutableStateOf("") }
     var mutableAge by remember { mutableIntStateOf(0) }
@@ -130,17 +138,18 @@ fun SignUpPage(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState).padding()
+                .verticalScroll(scrollState)
+                .padding()
                 .imePadding(),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center
         ) {
 
-            Spacer(Modifier.height(50.dp))
+            Spacer(Modifier.height(20.dp))
 
             HeaderText(stringResource(R.string.header_sign_up), textAlign = TextAlign.Start)
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(10.dp))
 
             ParagraphText(stringResource(R.string.paragraph_signup), textAlign = TextAlign.Start)
 
@@ -206,6 +215,7 @@ fun SignUpPage(
                 wrong = isWrongGovernorate
             )
 
+            if (cityListDropDawn.isNotEmpty() && cityListDropDawn.first().index != -1)
             Spacer(Modifier.height(10.dp))
 
 
@@ -327,7 +337,13 @@ fun SignUpPage(
 
             //Success Register
             is StateRegister.Success -> {
-                LoadingDialog(stringResource(R.string.account_created_success))
+                LoadingDialog(stringResource(
+                    if (state.data.data != null )
+                        R.string.account_created_success_to_home
+                    else
+                        R.string.account_created_success_to_login
+                ))
+
                 LaunchedEffect(Unit) {
 
                     snackbarHostState.showSnackbar(
@@ -336,12 +352,16 @@ fun SignUpPage(
                     )
 
 
-                    authNavController.navigate(RoutesAuth.loginPage){
-                        popUpTo(RoutesAuth.signUpPage){inclusive = true}
-                        registerViewModel.resetState()
-                    }
-
-
+                    if (state.data.data == null)
+                        authNavController.navigate(RoutesAuth.loginPage){
+                            popUpTo(RoutesAuth.signUpPage){inclusive = true}
+                            registerViewModel.resetState()
+                        }
+                    else
+                        appNavController.navigate(Routes.mainScreen){
+                            popUpTo(Routes.authScreen){inclusive = true}
+                            registerViewModel.resetState()
+                        }
                 }
                 isProgress = false
 
@@ -363,6 +383,7 @@ fun SignUpPage(
 
             else -> {}
         }
+
 
         SnackBar(snackBarHostState = snackbarHostState , modifier = Modifier.align(Alignment.BottomCenter))
 

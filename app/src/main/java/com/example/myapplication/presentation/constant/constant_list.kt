@@ -9,6 +9,10 @@ fun genderList() = listOf<EntryModel>(
         EntryModel(index = 1, titleAr = "أنثي", titleEn = "Female"),
 )
 
+fun genderTeamList() = listOf<EntryModel>(
+        EntryModel(index = 0, titleAr = "شباب", titleEn = "Male"),
+        EntryModel(index = 1, titleAr = "فتيات", titleEn = "Female"),
+)
 
 fun challengeTeamList() = List(11) { index ->
         val number = index + 1

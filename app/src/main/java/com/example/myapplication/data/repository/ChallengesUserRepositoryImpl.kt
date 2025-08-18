@@ -7,7 +7,7 @@ import com.example.myapplication.domain.repository.ChallengesUserRepository
 import retrofit2.Response
 import javax.inject.Inject
 
-class ChallengeUserRepositoryImpl @Inject constructor(private val challengeService: ChallengeService) : ChallengesUserRepository {
+class ChallengesUserRepositoryImpl @Inject constructor(private val challengeService: ChallengeService) : ChallengesUserRepository {
     override suspend fun getChallengesUser(
         userId: String,
         page: Int

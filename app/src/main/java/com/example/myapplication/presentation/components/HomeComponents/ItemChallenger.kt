@@ -127,7 +127,6 @@ fun ItemChallenger(
                         overflow = TextOverflow.Ellipsis
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
 
                     //date public post
                     Text(
@@ -224,7 +223,7 @@ fun ItemChallenger(
                  style = TextStyle(
                     fontSize = 16.sp,
                      lineHeight = 28.sp,
-                     fontFamily = almarai_light,
+                     fontFamily = almarai_regular,
                      color = black
                 )
         )//end description post

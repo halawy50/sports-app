@@ -54,6 +54,7 @@ import com.example.myapplication.presentation.components.SnackBar
 import com.example.myapplication.presentation.constant.ChangeLanguage
 import com.example.myapplication.presentation.constant.challengeTeamList
 import com.example.myapplication.presentation.constant.genderList
+import com.example.myapplication.presentation.constant.genderTeamList
 import com.example.myapplication.presentation.constant.routes.Routes
 import com.example.myapplication.presentation.viewmodel.AddNewChallengeViewModel
 import com.example.myapplication.presentation.viewmodel.CityAndGovernorateViewModel
@@ -74,7 +75,7 @@ fun AddNewChallengePage(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    val genderList = genderList()
+    val genderList = genderTeamList()
     val challengerTeamList = challengeTeamList()
     val governorateList by cityAndGovernorateViewModel.governorate.collectAsState()
     val governorateState by cityAndGovernorateViewModel.stateGovernorate.collectAsState()

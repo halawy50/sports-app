@@ -13,7 +13,6 @@ import com.example.myapplication.presentation.navController.NavController
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.presentation.constant.ChangeLanguage
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

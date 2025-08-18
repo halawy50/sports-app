@@ -3,6 +3,7 @@ package com.example.myapplication.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.data.local.TokenManager
 import com.example.myapplication.domain.model.register_model.RegisterRequest
 import com.example.myapplication.domain.model.register_model.RegisterResponse
 import com.example.myapplication.domain.repository.RegisterRepository
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase,
+    private val tokenManager: TokenManager
 ): ViewModel() {
     private val _state = MutableStateFlow<StateRegister>(StateRegister.Idle)
     val state: StateFlow<StateRegister> = _state
@@ -33,6 +35,13 @@ class RegisterViewModel @Inject constructor(
                 val result = registerUseCase(registerRequest)
 
                 if (result.isSuccessful && result.body() != null) {
+
+                    tokenManager.saveLoginToken(
+                        userId = result.body()!!.data!!.userId,
+                        accessToken = result.body()!!.data!!.accessToken,
+                        refreshToken = result.body()!!.data!!.refreshToken,
+                    )
+
                     _state.value = StateRegister.Success(result.body()!!)
                 } else {
                     val gson = Gson()

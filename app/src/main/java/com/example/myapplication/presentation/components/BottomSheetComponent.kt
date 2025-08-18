@@ -31,6 +31,7 @@ import com.example.myapplication.presentation.components.ButtonsComponents.Butto
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonWithBorder
 import com.example.myapplication.presentation.constant.challengeTeamList
 import com.example.myapplication.presentation.constant.genderList
+import com.example.myapplication.presentation.constant.genderTeamList
 import com.example.myapplication.presentation.constant.orderList
 import com.example.myapplication.presentation.viewmodel.FilterViewModel
 import com.example.myapplication.presentation.viewmodel.InformationUserViewModel
@@ -207,7 +208,7 @@ fun BottomSheetComponent(
                     // Gender Section
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         MultiSelectDropdown(
-                            items = genderList(),
+                            items = genderTeamList(),
                             selectedItems = selectedGender,
                             onSelectionChanged = { filterViewModel.setSelectedGender(it) },
                             label = stringResource(R.string.select_gender)

@@ -1,11 +1,13 @@
 package com.example.myapplication.presentation.components
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,12 +15,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -26,6 +32,8 @@ import com.example.myapplication.R
 import com.example.myapplication.domain.model.OnBoardingModel
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonFill
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonWithBorder
+import com.example.myapplication.presentation.constant.ChangeLanguage
+import com.example.myapplication.ui.theme.black
 import com.example.myapplication.ui.theme.white
 import kotlinx.coroutines.launch
 
@@ -37,13 +45,14 @@ fun ItemOnBoarding(
     padding: PaddingValues,
     pagerState: PagerState,
     onFinish: () -> Unit
-){
+) {
     val scope = rememberCoroutineScope()
-
+    val context = LocalContext.current
 
     Box(
-        modifier = Modifier.background(white).fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter,
+        modifier = Modifier
+            .background(white)
+            .fillMaxSize(),
     ) {
 
         // صورة الخلفية
@@ -54,14 +63,66 @@ fun ItemOnBoarding(
             contentScale = ContentScale.Crop
         )
 
-        Box(modifier = Modifier.padding(padding)){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp),
+            verticalArrangement = if (pagerState.currentPage == 0) Arrangement.SpaceBetween else Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            //  (Skip + Language toggle)
+            if (pagerState.currentPage == 0) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    //  Skip
+                    Button(
+                        onClick = {
+                            onFinish()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = white
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(0.dp),
+                    ) {
+                        ParagraphText(
+                            text = stringResource(R.string.skip),
+                            color = white
+                        )
+                    }
+
+                    Button(
+                        onClick = {
+                            ChangeLanguage.toggleLanguage(context = context)
+                            val activity = context as? Activity
+                            activity?.recreate()
+
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = white
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(0.dp), // بدون shadow
+                    ) {
+                        HeaderText(
+                            text = stringResource(R.string.language_toggle),
+                            color = white
+                        )
+                    }
+                }
+            }
+
+            //  OnBoarding
             Card(
-                modifier = Modifier
-                    .padding(16.dp),
                 shape = RoundedCornerShape(20.dp),
             ) {
                 Column(
-                    modifier = Modifier.background(white)
+                    modifier = Modifier
+                        .background(white)
                         .height(350.dp)
                         .padding(horizontal = 20.dp, vertical = 30.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -76,15 +137,28 @@ fun ItemOnBoarding(
                         HeaderText(onBoardingModel.title)
                         Spacer(modifier = Modifier.height(20.dp))
                         ParagraphText(onBoardingModel.description)
-
                     }
 
-                    //Next
+                    // زر Previous لو مش في أول صفحة
+                    if (pagerState.currentPage > 0) {
+                        ButtonWithBorder(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(0.2f),
+                            onClick = {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                                }
+                            },
+                            text = stringResource(R.string.previous)
+                        )
+                    }
+
+                    // زر Next أو Finish
                     ButtonFill(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(0.2f),
-
                         onClick = {
                             scope.launch {
                                 if (isFinish) {
@@ -94,33 +168,15 @@ fun ItemOnBoarding(
                                 }
                             }
                         },
-
                         label = if (isFinish) {
                             stringResource(R.string.finish)
                         } else {
                             stringResource(R.string.next)
                         },
                     )
-
-                    if (pagerState.currentPage>0)
-                    //Previous
-                        ButtonWithBorder(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(0.2f),
-
-                            onClick = {
-                                scope.launch {
-                                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                                }
-                            },
-
-                            text = stringResource(R.string.previous)
-                        )
-
                 }
             }
         }
-
     }
 }
+

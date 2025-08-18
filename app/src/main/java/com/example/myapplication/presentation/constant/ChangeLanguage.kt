@@ -24,6 +24,14 @@ object ChangeLanguage {
         }
     }
 
+    fun toggleLanguage(context: Context): String {
+        val currentLang = getSavedLanguage(context)
+        val newLang = if (currentLang == "en") "ar" else "en"
+        saveLanguage(context, newLang)
+        setLocale(context, newLang)
+        return newLang
+    }
+
     fun saveLanguage(context: Context, language: String) {
         context.getSharedPreferences("LANGUAGE_SETTING", Context.MODE_PRIVATE)
             .edit {
@@ -33,7 +41,7 @@ object ChangeLanguage {
 
     fun getSavedLanguage(context: Context): String {
         return context.getSharedPreferences("LANGUAGE_SETTING", Context.MODE_PRIVATE)
-            .getString("language", "en") ?: "en"
+            .getString("language", "ar") ?: "ar"
     }
 
 }

@@ -72,7 +72,8 @@
     <string name="loading_creating_account">جاري إنشاء الحساب</string>
     <string name="success_registration">تم التسجيل بنجاح</string>
     <string name="loading_login">جاري تسجيل الدخول...</string>
-    <string name="account_created_success">تم إنشاء الحساب بنجاح، سيتم نقلك إلى صفحة تسجيل الدخول</string>
+    <string name="account_created_success_to_login">تم إنشاء الحساب بنجاح. سيتم توجيهك إلى صفحة تسجيل الدخول.</string>
+    <string name="account_created_success_to_home">تم إنشاء الحساب بنجاح. سيتم توجيهك إلى الصفحة الرئيسية.</string>
     <string name="sending_otp">جاري إرسال الرمز</string>
 
     <string name="error_empty_otp">برجاء إدخال الرمز</string>
@@ -144,7 +145,7 @@
     <string name="error_opening_whatsapp">خطأ في فتح واتساب: %1$s</string>
     <string name="whatsapp_message">مرحباً، رأيت تحديك في التطبيق وأريد التحدث معك</string>
     <string name="update_challenge">تعديل التحدي</string>
-    <string name="challenge_update_successfully">ام تحديث التحدي بنجاح</string>
+    <string name="challenge_update_successfully">تم تحديث التحدي بنجاح</string>
     <string name="governorate_Select">اختر المحافظة</string>
     <string name="city_select">حدد أي مدينة</string>
     <string name="loading">جاري التحميل...</string>
@@ -221,6 +222,9 @@
     <string name="privacy_section11_text">
         إذا كان لديك أي أسئلة حول سياسة الخصوصية هذه، يمكنك التواصل معنا عبر: support@example.com
     </string>
+
+    <string name="skip">تخطي</string>
+    <string name="language_toggle">EN</string>
 
 
 </resources>
