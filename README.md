@@ -15,9 +15,8 @@ An Android application built with Kotlin that allows users to create, manage, an
 - **Profile Management**: Complete user profile with personal information
 - **Multi-language Support**: Arabic and English language support
 - **Location Services**: City and Governorate selection
-- **Real-time Updates**: Live challenge updates and notifications
+- **Real-time Updates**: Live challenge updates
 - **Modern UI**: Built with Jetpack Compose for smooth user experience
-- **Offline Support**: Local data management with caching
 
 ## 🏗️ Architecture
 
