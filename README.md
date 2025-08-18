@@ -254,7 +254,7 @@ Splash Screen → OnBoarding → Login/Register → OTP Verification → Home Sc
 
 ### Challenge Management Flow
 ```
-Home → View Challenges → Create/Update Challenge → Challenge Details → Participation
+Home → View Challenges → Create/Update Challenge → Challenge Details
 ```
 
 ### Complete User Journey
