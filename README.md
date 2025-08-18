@@ -15,8 +15,8 @@ An Android application built with Kotlin that allows users to create, manage, an
 ## 🚀 Features
 
 - **Challenge Management**: Create, update, and delete challenges
-- **User Authentication**: Secure login/register with OTP verification
-- **Challenge Discovery**: Browse and search for challenges created by other users
+- **User Authentication**: Secure login/register/ForgetPassword with OTP
+- **Challenge Discovery**: Browse and filter for challenges created by other users
 - **Profile Management**: Complete user profile with personal information
 - **Multi-language Support**: Arabic and English language support
 - **Location Services**: City and Governorate selection
