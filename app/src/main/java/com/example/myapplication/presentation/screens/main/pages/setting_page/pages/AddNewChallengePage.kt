@@ -1,22 +1,15 @@
 package com.example.myapplication.presentation.screens.main.pages.setting_page.pages
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -28,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -43,7 +35,6 @@ import com.example.myapplication.domain.model.WrongVerify
 import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
 import com.example.myapplication.presentation.components.AlertDialog
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonFill
-import com.example.myapplication.presentation.components.HeaderText
 import com.example.myapplication.presentation.components.HeaderTopBar
 import com.example.myapplication.presentation.components.InputsComponents.DropDawnSelect
 import com.example.myapplication.presentation.components.InputsComponents.InputNumber
@@ -311,11 +302,11 @@ fun AddNewChallengePage(
                             var challengeRequest = ChallengeRequest(
                                 descriptionPost = mutableDescribe,
                                 club = mutableClub,
-                                team = mutableChallengeTeam + 1     ,
+                                team = mutableChallengeTeam + 1,
                                 whatsUpNumber = mutableWhatsUp,
-                                gender = mutableGender,
-                                governorate = mutableGovernorate,
-                                city = mutableCity,
+                                genderChallengeIndex = mutableGender.index,
+                                governorateId = mutableGovernorate.id.toInt(),
+                                cityId = mutableCity.id.toInt(),
                             )
 
                             val request = validateAddChallenge(
@@ -358,9 +349,9 @@ fun AddNewChallengePage(
                     LoadingDialog(message = stringResource(id = R.string.challenge_added_successfully))
 
 
-                    homeChallengesViewModel.restartCounterPage()
 
-                    LaunchedEffect(Unit) {
+                    LaunchedEffect(true) {
+                        homeChallengesViewModel.restartCounterPage()
                         snackbarHostState.showSnackbar(
                             if (ChangeLanguage.getSavedLanguage(context)=="ar") state.data.messageAr
                             else state.data.messageEn

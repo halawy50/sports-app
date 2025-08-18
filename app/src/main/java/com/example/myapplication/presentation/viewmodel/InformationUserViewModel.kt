@@ -36,6 +36,8 @@ class InformationUserViewModel @Inject constructor(
                 val informationUserResult = informationUserUseCase(tokenManager.getUserId().toString())
 
                 if (informationUserResult.isSuccessful && informationUserResult.body() != null){
+                    Log.d("InformationUser", "${informationUserResult.body()}")
+
                     _stateFetchData.value = GlobalState.SUCCESS
                     _informationUser.value = informationUserResult.body()
                 }else if (informationUserResult.isSuccessful() && informationUserResult.body() == null){

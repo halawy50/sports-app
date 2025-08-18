@@ -40,13 +40,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.myapplication.R
-import com.example.myapplication.domain.model.challenge_model.Challenge
+import com.example.myapplication.domain.model.challenge_model.ChallengeResult
 import com.example.myapplication.presentation.constant.ChangeLanguage
 import com.example.myapplication.presentation.viewmodel.TokenManagerViewModel
-import com.example.myapplication.ui.theme.almarai_light
 import com.example.myapplication.ui.theme.almarai_regular
 import com.example.myapplication.ui.theme.black
 import com.example.myapplication.ui.theme.gray
@@ -58,7 +55,7 @@ import com.example.myapplication.utils.formatIsoDateToLocalShort
 fun ItemChallenger(
     onRemove: () -> Unit,
     onEdit: () -> Unit,
-    challenge: Challenge,
+    challenge: ChallengeResult,
     tokenManagerViewModel: TokenManagerViewModel = hiltViewModel(),
 
 ){
@@ -70,7 +67,7 @@ fun ItemChallenger(
 
     val context = LocalContext.current
 
-    val genderUserId = if (challenge.genderUserId.isNullOrEmpty()) -1 else challenge.genderUserId.toInt()
+    val genderUserId = challenge.genderUserIndex
 
     Column {
         //Header(image, name, history, chat)
@@ -287,7 +284,7 @@ fun ItemChallenger(
 
                 Spacer(modifier = Modifier.width(10.dp))
 
-                Text(text = stringResource(id = if (challenge.gender.index == 0) R.string.gender_male else R.string.gender_female))
+                Text(text = stringResource(id = if (challenge.genderChallengeIndex == 0) R.string.gender_male else R.string.gender_female))
             }
 
             //Location

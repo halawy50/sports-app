@@ -9,10 +9,4 @@ class ChallengesUserUseCase(private val challengesUserRepository: ChallengesUser
         page: Int
     ) = challengesUserRepository.getChallengesUser(userId = userId, page = page)
 
-    suspend fun totalPageUserPosts(
-        userId: String,
-    ) = challengesUserRepository.totalPageUserChallenges(userId = userId)
-
-    suspend fun previewDataUser(userId: String) = challengesUserRepository.previewDataUser(userId = userId)
-
 }

@@ -1,7 +1,7 @@
 package com.example.myapplication.utils
 
-import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
+import com.example.myapplication.domain.model.challenge_model.ChallengeDataUpdate
 
 interface UpdateChallenge {
-    fun updateChallenge(challengeID :String, challengeRequest: ChallengeRequest): Boolean
+    fun updateChallenge(challengeID: String, challengeDataUpdate: ChallengeDataUpdate): Boolean
 }

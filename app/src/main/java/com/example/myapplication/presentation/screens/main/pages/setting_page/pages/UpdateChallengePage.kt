@@ -35,6 +35,7 @@ import com.example.myapplication.domain.model.Gender
 import com.example.myapplication.domain.model.Governorate
 import com.example.myapplication.domain.model.WrongVerify
 import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
+import com.example.myapplication.domain.model.challenge_model.ChallengeDataUpdate
 import com.example.myapplication.presentation.components.AlertDialog
 import com.example.myapplication.presentation.components.ButtonsComponents.ButtonFill
 import com.example.myapplication.presentation.components.HeaderTopBar
@@ -46,7 +47,6 @@ import com.example.myapplication.presentation.components.LoadingDialog
 import com.example.myapplication.presentation.components.SnackBar
 import com.example.myapplication.presentation.constant.ChangeLanguage
 import com.example.myapplication.presentation.constant.challengeTeamList
-import com.example.myapplication.presentation.constant.genderList
 import com.example.myapplication.presentation.constant.genderTeamList
 import com.example.myapplication.presentation.constant.routes.Routes
 import com.example.myapplication.utils.GlobalState
@@ -64,6 +64,7 @@ fun UpdateChallengePage(
     appNavController: NavController,
     challengeID: String,
 ) {
+
 
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -208,12 +209,12 @@ fun UpdateChallengePage(
     // تعيين القيمة الافتراضية للجنس والفريق عند جلب التحدي
     LaunchedEffect(challenge) {
         challenge?.let { chal ->
-            Log.d("UpdateChallengePage", "Challenge gender index: ${chal.gender.index}")
+            Log.d("UpdateChallengePage", "Challenge gender index: ${chal.genderChallengeIndex}")
             Log.d("UpdateChallengePage", "Challenge team value: ${chal.team}")
             Log.d("UpdateChallengePage", "Challenge Describe value: ${chal.description}")
             Log.d("UpdateChallengePage", "Challenge Club value: ${chal.club}")
 
-            val genderFromChallenge = genderList.find { it.index == chal.gender.index }
+            val genderFromChallenge = genderList.find { it.index == chal.genderChallengeIndex }
             if (genderFromChallenge != null) {
                 mutableGender = genderFromChallenge
             }
@@ -394,23 +395,14 @@ fun UpdateChallengePage(
                     ButtonFill(
                         onClick = {
 
-                           var challengeRequest = ChallengeRequest(
+                            var challengeRequest = ChallengeRequest(
                                 descriptionPost = defaultDescribe,
                                 club = defaultClub,
                                 team = mutableTeam.index + 1,
                                 whatsUpNumber = defaultWhatsUp,
-                                gender = Gender(
-                                    index = mutableGender.index,
-                                    genderAr = mutableGender.titleAr,
-                                    genderEn = mutableGender.titleEn
-                                ),
-                                governorate = mutableGovernorate,
-                                city = City(
-                                    id = defaultCitySelect.index.toString(),
-                                    governorate_id = defaultGovernorateSelect.index.toString(),
-                                    city_name_ar = defaultCitySelect.titleAr.toString(),
-                                    city_name_en = defaultCitySelect.titleEn.toString()
-                                ),
+                                genderChallengeIndex = mutableGender.index,
+                                governorateId = mutableGovernorate.id.toInt(),
+                                cityId = defaultCitySelect.index,
                             )
 
                             val request = validateAddChallenge(
@@ -450,8 +442,8 @@ fun UpdateChallengePage(
                 is StateUpdateChallenge.Success -> {
                     LoadingDialog(message = stringResource(id = R.string.challenge_update_successfully))
 
-                    var challengeRequest = ChallengeRequest(
-                        descriptionPost = defaultDescribe,
+                    var challengeRequestNew = ChallengeDataUpdate(
+                        description = defaultDescribe,
                         club = defaultClub,
                         team = mutableTeam.index + 1,
                         whatsUpNumber = defaultWhatsUp,
@@ -460,17 +452,21 @@ fun UpdateChallengePage(
                             genderAr = mutableGender.titleAr,
                             genderEn = mutableGender.titleEn
                         ),
-                        governorate = mutableGovernorate,
+                        governorate = Governorate(
+                            governorateNameAr = mutableGovernorate.governorateNameAr,
+                            governorateNameEn = mutableGovernorate.governorateNameEn,
+                            id = mutableGovernorate.id
+                        ),
                         city = City(
                             id = defaultCitySelect.index.toString(),
-                            governorate_id = defaultGovernorateSelect.index.toString(),
-                            city_name_ar = defaultCitySelect.titleAr.toString(),
-                            city_name_en = defaultCitySelect.titleEn.toString()
+                            governorate_id = mutableGovernorate.id,
+                            city_name_ar = defaultCitySelect.titleAr,
+                            city_name_en = defaultCitySelect.titleEn
                         ),
                     )
                         //Update Challenges in Home Page
                         LaunchedEffect(true) {
-                            homeChallengesViewModel.updateChallenge(challengeID = challengeID, challengeRequest = challengeRequest)
+                            homeChallengesViewModel.updateChallenge(challengeID = challengeID, challengeDataUpdate = challengeRequestNew)
 
                             Log.d("UpdatedChallenge", state.data.messageEn)
                                 snackbarHostState.showSnackbar(

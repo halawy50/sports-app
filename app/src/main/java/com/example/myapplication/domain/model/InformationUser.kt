@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class InformationUser(
     val fullName: String,
     val email: String,
-    val gender: Gender,
+    val gender: Int,
     val governorate: Governorate,
     val city: City,
     val age: Int,

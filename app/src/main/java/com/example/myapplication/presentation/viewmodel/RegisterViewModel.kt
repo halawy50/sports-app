@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.local.TokenManager
 import com.example.myapplication.domain.model.register_model.RegisterRequest
 import com.example.myapplication.domain.model.register_model.RegisterResponse
-import com.example.myapplication.domain.repository.RegisterRepository
 import com.example.myapplication.domain.useCase.RegisterUseCase
 import com.example.myapplication.utils.StateRegister
 import com.google.gson.Gson

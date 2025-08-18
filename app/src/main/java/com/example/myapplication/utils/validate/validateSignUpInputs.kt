@@ -113,9 +113,9 @@ fun validateSignUpInputs(
 
     return if (hasError) null else RegisterRequest(
         fullName = fullName.trim(),
-        gender = gender,
-        governorate = governorate,
-        city = city,
+        genderIndex = gender.index,
+        governorateId = governorate.id.toInt(),
+        cityId = city.id.toInt(),
         age = age,
         email = email.trim().lowercase(),
         password = password

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.local.TokenManager
-import com.example.myapplication.domain.model.challenge_model.Challenge
 import com.example.myapplication.domain.useCase.DeleteChallengeUseCase
 import com.example.myapplication.domain.useCase.TokenUseCase
 import com.example.myapplication.utils.RemoveItemState
@@ -39,6 +38,8 @@ class DeleteChallengeViewModel @Inject constructor(
         viewModelScope.launch {
             _removeChallengeState.value = RemoveItemState.REMOVING
             try {
+                Log.d("DeleteChallenge", "challengeID : ${challengeID} - Access Token : ${tokenManager.getAccessToken().toString()}")
+
                 val result = deleteChallengeUseCase(
                     accessToken = tokenManager.getAccessToken().toString(),
                     challengeId = challengeID
@@ -52,31 +53,31 @@ class DeleteChallengeViewModel @Inject constructor(
 
                     if (refreshToken.isBlank()) {
                         _removeChallengeState.value = RemoveItemState.UNAuthorization
-                        Log.d("ProcessAddNewChallenge", "401 - No Refresh Token")
+                        Log.d("DeleteChallenge", "401 - No Refresh Token")
                         return@launch
                     }
 
                     val refreshResult = tokenUseCase(refreshToken = refreshToken)
                     val newToken = refreshResult.body()?.accessToken
 
-                    Log.d("ProcessAddNewChallenge", "Refresh Token Result: ${refreshResult.body()}")
+                    Log.d("DeleteChallenge", "Refresh Token Result: ${refreshResult.body()}")
 
                     if (refreshResult.isSuccessful && !newToken.isNullOrBlank()) {
                         tokenManager.saveAccessToken(accessToken = newToken)
                         deleteChallenge(challengeID = challengeID)
                     } else {
                         _removeChallengeState.value = RemoveItemState.UNAuthorization
-                        Log.d("ProcessAddNewChallenge", "401 - Refresh Failed")
+                        Log.d("DeleteChallenge", "401 - Refresh Failed")
                     }
 
                 } else {
                     _removeChallengeState.value = RemoveItemState.WRONG_WHEN_REMOVE
-                    Log.d("ProcessAddNewChallenge", "Failure with code: ${result.code()}")
+                    Log.d("DeleteChallenge", "Failure with code: ${result.code()}")
                 }
 
             } catch (e: Exception) {
                 _removeChallengeState.value = RemoveItemState.WRONG_WHEN_REMOVE
-                Log.e("ProcessAddNewChallenge", "Exception: $e", e)
+                Log.e("DeleteChallenge", "Exception: $e", e)
             }
         }
 

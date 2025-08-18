@@ -23,6 +23,7 @@ import com.example.myapplication.utils.GlobalState
 import com.example.myapplication.R
 import com.example.myapplication.presentation.components.HeaderTopBar
 import com.example.myapplication.presentation.constant.ChangeLanguage
+import com.example.myapplication.presentation.constant.genderList
 
 @Composable
 fun InformationUserPage(
@@ -93,8 +94,8 @@ fun InformationUserPage(
 
                                 label = stringResource(R.string.email),
                                 initialValue = if (ChangeLanguage.getSavedLanguage(context) == "ar")
-                                    it.gender.genderAr
-                                else it.gender.genderEn
+                                    genderList()[it.gender].titleAr
+                                else genderList()[it.gender].titleEn
                             )
 
                             Spacer(modifier = Modifier.height(10.dp))

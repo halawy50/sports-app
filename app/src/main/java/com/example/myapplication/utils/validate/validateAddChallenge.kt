@@ -2,9 +2,6 @@ package com.example.myapplication.utils.validate
 
 import android.content.Context
 import com.example.myapplication.R
-import com.example.myapplication.domain.model.City
-import com.example.myapplication.domain.model.Gender
-import com.example.myapplication.domain.model.Governorate
 import com.example.myapplication.domain.model.WrongVerify
 import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
 
@@ -36,7 +33,7 @@ fun validateAddChallenge(
 
 
     // Validate Gender
-    if (challengeRequest.gender.genderAr.isBlank()&&challengeRequest.gender.genderEn.isBlank()) {
+    if (challengeRequest.genderChallengeIndex !in 0..1) {
         setGenderError(WrongVerify(true, context.getString(R.string.error_empty_gender)))
         hasError = true
     } else {
@@ -44,7 +41,7 @@ fun validateAddChallenge(
     }
 
     // Validate Governorate
-    if (challengeRequest.governorate.id.toInt()<0) {
+    if (challengeRequest.governorateId<0) {
         setGovernorateError(WrongVerify(true, context.getString(R.string.error_empty_governorate)))
         hasError = true
     } else {
@@ -52,7 +49,7 @@ fun validateAddChallenge(
     }
 
     // Validate City
-    if (challengeRequest.city.id.toInt()<0) {
+    if (challengeRequest.cityId<0) {
         setCityError(WrongVerify(true, context.getString(R.string.error_empty_city)))
         hasError = true
     } else {

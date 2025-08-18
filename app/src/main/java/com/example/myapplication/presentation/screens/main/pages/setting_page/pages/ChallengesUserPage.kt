@@ -43,7 +43,6 @@ import com.example.myapplication.presentation.components.HomeComponents.EmptyCha
 import com.example.myapplication.presentation.components.HomeComponents.ItemChallenger
 import com.example.myapplication.presentation.components.HomeComponents.LoadingShimmer
 import com.example.myapplication.presentation.viewmodel.ChallengesUserViewModel
-import com.example.myapplication.utils.StateGetChallenges
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.example.myapplication.R
@@ -54,12 +53,12 @@ import com.example.myapplication.presentation.components.SnackBar
 import com.example.myapplication.presentation.constant.routes.Routes
 import com.example.myapplication.presentation.viewmodel.DeleteChallengeViewModel
 import com.example.myapplication.presentation.viewmodel.HomeChallengesViewModel
+import com.example.myapplication.utils.GlobalState
 import com.example.myapplication.utils.RemoveItemState
 
 @Composable
 fun ChallengesUserPage(
         challengesUserViewModel: ChallengesUserViewModel = hiltViewModel(),
-        homeChallengesViewModel: HomeChallengesViewModel,
         navController: NavController,
         deleteChallengeViewModel: DeleteChallengeViewModel = hiltViewModel(),
     ){
@@ -69,7 +68,7 @@ fun ChallengesUserPage(
     val allPosts by challengesUserViewModel.challenges.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
     val swipeRefreshState = rememberSwipeRefreshState(
-        isRefreshing = stateGetPosts is StateGetChallenges.Loading && allPosts.isEmpty()
+        isRefreshing = stateGetPosts == GlobalState.LOADING && allPosts.isEmpty()
     )
     val context = LocalContext.current
 
@@ -84,7 +83,7 @@ fun ChallengesUserPage(
             .collect { lastVisibleIndex ->
                 val totalItems = listState.layoutInfo.totalItemsCount
                 val threshold = 3
-                val isLoading = stateGetPosts is StateGetChallenges.Loading
+                val isLoading = stateGetPosts == GlobalState.LOADING
 
                 if (!isLoading && lastVisibleIndex != null && lastVisibleIndex >= totalItems - threshold) {
                     challengesUserViewModel.getAllChallengesUser()
@@ -132,11 +131,11 @@ fun ChallengesUserPage(
                                 onRemove = {
                                     deleteChallengeViewModel.setStateRemove(
                                         RemoveItemState.I_WANT_TO_REMOVE,
-                                        selectChallengeId = item.challengeID
+                                        selectChallengeId = item.challengeId
                                     )
                                 },
                                 onEdit = {
-                                    navController.navigate(Routes.challengeID(item.challengeID))
+                                    navController.navigate(Routes.challengeID(item.challengeId))
                                 }
                             )
                         }
@@ -144,16 +143,16 @@ fun ChallengesUserPage(
                     }
 
                     item {
-                        when (val state = stateGetPosts) {
-                            is StateGetChallenges.Loading -> {
+                        when (stateGetPosts) {
+                             GlobalState.LOADING -> {
                                 LoadingShimmer()
                             }
 
-                            is StateGetChallenges.NULL -> {
+                            GlobalState.EMPTY -> {
                                 EmptyChallenges(appNavController = navController)
                             }
 
-                            is StateGetChallenges.Failure -> {
+                            GlobalState.ERROR -> {
                                 if (allPosts.isNotEmpty()) {
                                 } else {
                                     Text(stringResource(R.string.something_wrong), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)

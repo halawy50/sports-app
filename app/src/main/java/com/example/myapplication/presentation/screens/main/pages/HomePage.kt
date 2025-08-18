@@ -1,6 +1,7 @@
 package com.example.myapplication.presentation.screens.main.pages
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,7 +39,6 @@ import com.example.myapplication.presentation.components.HomeComponents.HeaderHo
 import com.example.myapplication.presentation.components.HomeComponents.ItemChallenger
 import com.example.myapplication.presentation.components.HomeComponents.LoadingShimmer
 import com.example.myapplication.presentation.viewmodel.HomeChallengesViewModel
-import com.example.myapplication.utils.StateGetChallenges
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.example.myapplication.R
@@ -79,7 +79,7 @@ fun HomePage(
     val challengesFilter by homeChallengesViewModel.challengesFilter.collectAsState()
     val stateFilter by homeChallengesViewModel.stateFilter.collectAsState()
     val swipeRefreshState = rememberSwipeRefreshState(
-        isRefreshing = stateGetPosts is StateGetChallenges.Loading && allPosts.isEmpty()
+        isRefreshing = stateGetPosts == GlobalState.LOADING && allPosts.isEmpty()
     )
 
         LaunchedEffect(listState) {
@@ -95,7 +95,7 @@ fun HomePage(
                             homeChallengesViewModel.filterChallenges()
                         }
                     }else{
-                        val isLoading = stateGetPosts is StateGetChallenges.Loading
+                        val isLoading = stateGetPosts == GlobalState.LOADING
 
                         if (!isLoading && lastVisibleIndex != null && lastVisibleIndex >= totalItems - threshold) {
                             homeChallengesViewModel.getAllChallenges()
@@ -151,12 +151,13 @@ fun HomePage(
                                 challenge = item,
                                 onRemove = {
                                     deleteChallengeViewModel.setStateRemove(
-                                        RemoveItemState.I_WANT_TO_REMOVE,
-                                        selectChallengeId = item.challengeID
+                                        stateRemove = RemoveItemState.I_WANT_TO_REMOVE,
+                                        selectChallengeId = item.challengeId
                                     )
                                 },
                                 onEdit = {
-                                    appNavController.navigate(Routes.challengeID(item.challengeID))
+                                    appNavController.navigate(Routes.challengeID(item.challengeId))
+
                                 }
                             )
                         }
@@ -207,17 +208,17 @@ fun HomePage(
                                 }
                             }else{
                                 when (val state = stateGetPosts) {
-                                    is StateGetChallenges.Loading -> {
+                                     GlobalState.LOADING -> {
                                         Column {
                                             LoadingShimmer()
                                         }
                                     }
 
-                                    is StateGetChallenges.NULL -> {
+                                    GlobalState.EMPTY -> {
                                         EmptyChallenges(appNavController = appNavController)
                                     }
 
-                                    is StateGetChallenges.Failure -> {
+                                    GlobalState.ERROR -> {
                                         if (allPosts.isEmpty()) {
                                             Column {
                                                 Text(
@@ -342,7 +343,7 @@ fun HomePage(
                     homeChallengesViewModel.setInitialFilter(filterRequest = filterRequest)
                 },
                 cancelFilter = {
-                    homeChallengesViewModel.discordFilter()
+                    homeChallengesViewModel.discardFilter()
                     filterViewModel.resetToDefaultFilter()
                     showSheet = false
                 }

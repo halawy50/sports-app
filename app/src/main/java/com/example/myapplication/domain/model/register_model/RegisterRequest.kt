@@ -1,18 +1,23 @@
 package com.example.myapplication.domain.model.register_model
 
-import com.example.myapplication.domain.model.City
-import com.example.myapplication.domain.model.Gender
-import com.example.myapplication.domain.model.Governorate
+
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
 @Serializable
-data class RegisterRequest (
-    val fullName: String,
-    val gender: Gender,
-    val governorate: Governorate,
-    val city: City,
+data class RegisterRequest(
+    @SerialName("age")
     val age: Int,
+    @SerialName("cityId")
+    val cityId: Int,
+    @SerialName("email")
     val email: String,
-    val password: String,
+    @SerialName("fullName")
+    val fullName: String,
+    @SerialName("genderIndex")
+    val genderIndex: Int,
+    @SerialName("governorateId")
+    val governorateId: Int,
+    @SerialName("password")
+    val password: String
 )

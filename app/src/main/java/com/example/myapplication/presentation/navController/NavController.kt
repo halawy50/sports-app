@@ -15,7 +15,6 @@ import com.example.myapplication.MainActivity
 import com.example.myapplication.presentation.constant.routes.Routes
 import com.example.myapplication.presentation.screens.main.MainScreen
 import com.example.myapplication.presentation.screens.onBoardingScreen.OnBoardingScreen
-import com.example.myapplication.presentation.screens.changeLanguageScreen.ChangeLanguageScreen
 import com.example.myapplication.presentation.screens.main.pages.setting_page.pages.AddNewChallengePage
 import com.example.myapplication.presentation.screens.main.pages.setting_page.pages.ChallengesUserPage
 import com.example.myapplication.presentation.screens.main.pages.setting_page.pages.InformationUserPage
@@ -43,11 +42,6 @@ fun NavController(activity: MainActivity ,
                 SplashScreen(activity = activity, navController = navController)
             }
 
-            //changeLanguageScreen
-            composable(Routes.changeLanguageScreen){
-                ChangeLanguageScreen(navController= navController,activity = activity, padding = padding)
-            }
-
 
             //OnBoardingScreen
             composable(Routes.onBoardingScreen){
@@ -67,7 +61,7 @@ fun NavController(activity: MainActivity ,
 
             //My Challenges Page
             composable(Routes.myChallengesPage){
-                ChallengesUserPage(navController = navController, homeChallengesViewModel = homeChallengesViewModel)
+                ChallengesUserPage(navController = navController)
             }
 
             //Add New Challenges Page

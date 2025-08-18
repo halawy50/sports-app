@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.local.TokenManager
-import com.example.myapplication.domain.model.challenge_model.Challenge
 import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
 import com.example.myapplication.domain.model.challenge_model.ResponseData
+import com.example.myapplication.domain.model.challenge_model.SingleChallenge
 import com.example.myapplication.domain.useCase.TokenUseCase
 import com.example.myapplication.domain.useCase.UpdateChallengeUseCase
 import com.example.myapplication.utils.GlobalState
@@ -24,8 +24,8 @@ class UpdateChallengeViewModel @Inject constructor(
     private val updateChallengeUseCase: UpdateChallengeUseCase
 ): ViewModel() {
 
-    private val _challenge = MutableStateFlow<Challenge?>(null)
-    val challenge: StateFlow<Challenge?> = _challenge
+    private val _challenge = MutableStateFlow<SingleChallenge?>(null)
+    val challenge: StateFlow<SingleChallenge?> = _challenge
 
     private val _stateGetChallenge = MutableStateFlow<GlobalState>(GlobalState.IDLE)
     val stateGetChallenge: StateFlow<GlobalState> = _stateGetChallenge
@@ -117,8 +117,10 @@ class UpdateChallengeViewModel @Inject constructor(
                 val result = updateChallengeUseCase.getSingleChallenge(challengeID = challengeID)
 
                 if (result.isSuccessful && result.code() == 200 && result.body() != null){
-                    _stateGetChallenge.value = GlobalState.SUCCESS
+
                     _challenge.value = result.body()
+
+                    _stateGetChallenge.value = GlobalState.SUCCESS
                 }else{
                     _stateGetChallenge.value = GlobalState.EMPTY
                 }

@@ -1,35 +1,29 @@
 package com.example.myapplication.domain.model.challenge_model
 
+
 import com.example.myapplication.domain.model.City
-import com.example.myapplication.domain.model.Gender
 import com.example.myapplication.domain.model.Governorate
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
-
-data class Challenge(
+@Serializable
+data class SingleChallenge(
     @SerializedName("city")
     val city: City,
-    @SerializedName("namePlayer")
-    val namePlayer:  String = String(),
     @SerializedName("club")
-    val club: String = String(),
+    val club: String,
     @SerializedName("description")
-    val description: String = String(),
-    @SerializedName("gender")
-    val gender: Gender,
+    val description: String,
+    @SerializedName("genderChallengeIndex")
+    val genderChallengeIndex: Int,
     @SerializedName("governorate")
     val governorate: Governorate,
     @SerializedName("postId")
-    val challengeID: String,
+    val challengeId: String,
     @SerializedName("team")
     val team: Int,
     @SerializedName("upload")
-    val upload: String = String(),
-    @SerializedName("userFK")
-    val userFK: String,
+    val upload: String,
     @SerializedName("whatsUpNumber")
-    val whatsUpNumber: String,
-    @SerializedName("genderUserId")
-    val genderUserId: String
-
+    val whatsUpNumber: String
 )

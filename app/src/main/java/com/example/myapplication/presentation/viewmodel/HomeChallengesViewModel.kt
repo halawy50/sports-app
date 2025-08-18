@@ -3,14 +3,14 @@ package com.example.myapplication.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.domain.model.challenge_model.Challenge
-import com.example.myapplication.domain.model.challenge_model.ChallengeRequest
 import com.example.myapplication.domain.model.challenge_model.FilterRequest
+import com.example.myapplication.domain.model.challenge_model.ChallengeDataUpdate
+import com.example.myapplication.domain.model.challenge_model.ChallengeResult
 import com.example.myapplication.domain.useCase.HomeChallengesUseCase
 import com.example.myapplication.utils.GlobalState
-import com.example.myapplication.utils.StateGetChallenges
 import com.example.myapplication.utils.UpdateChallenge
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -22,284 +22,260 @@ class HomeChallengesViewModel @Inject constructor(
     private val homeChallengesUseCase: HomeChallengesUseCase,
 ): UpdateChallenge, ViewModel() {
 
-    private val _challenges = MutableStateFlow<List<Challenge>>(emptyList())
-    val challenges: StateFlow<List<Challenge>> = _challenges
+    // Regular challenges state
+    private val _challenges = MutableStateFlow<List<ChallengeResult>>(emptyList())
+    val challenges: StateFlow<List<ChallengeResult>> = _challenges
 
-    private val _totalPage = MutableStateFlow<Int>(1)
+    private val _totalPage = MutableStateFlow(1)
     val totalPage: StateFlow<Int> = _totalPage
 
-    private val _counterPage = MutableStateFlow<Int>(1)
+    private val _counterPage = MutableStateFlow(1)
     val counterPage: StateFlow<Int> = _counterPage
 
-    private val _initialState = MutableStateFlow<Boolean>(false)
-    val initialState : StateFlow<Boolean> = _initialState
+    private val _initialState = MutableStateFlow(false)
+    val initialState: StateFlow<Boolean> = _initialState
 
-    private val _stateGetChallenges = MutableStateFlow<StateGetChallenges>(StateGetChallenges.Idle)
-    val stateGetChallenges: StateFlow<StateGetChallenges> = _stateGetChallenges
+    private val _stateGetChallenges = MutableStateFlow(GlobalState.IDLE)
+    val stateGetChallenges: StateFlow<GlobalState> = _stateGetChallenges
 
-    private val _stateFilter = MutableStateFlow<GlobalState>(GlobalState.IDLE)
+    // Filter state
+    private val _stateFilter = MutableStateFlow(GlobalState.IDLE)
     val stateFilter: StateFlow<GlobalState> = _stateFilter
 
-    private val _totalPageFilter = MutableStateFlow<Int>(1)
+    private val _totalPageFilter = MutableStateFlow(1)
+    val totalPageFilter: StateFlow<Int> = _totalPageFilter
 
-    private val _challengesFilter = MutableStateFlow<List<Challenge>>(emptyList())
-    val challengesFilter: StateFlow<List<Challenge>> = _challengesFilter
+    private val _challengesFilter = MutableStateFlow<List<ChallengeResult>>(emptyList())
+    val challengesFilter: StateFlow<List<ChallengeResult>> = _challengesFilter
 
-    private val _currentPageFilter = MutableStateFlow<Int>(1)
+    private val _currentPageFilter = MutableStateFlow(1)
     val currentPageFilter: StateFlow<Int> = _currentPageFilter
 
-    private val _isFilter = MutableStateFlow<Boolean>(false)
+    private val _isFilter = MutableStateFlow(false)
     val isFilter: StateFlow<Boolean> = _isFilter
 
     private val _initialFilterRequest = MutableStateFlow<FilterRequest?>(null)
     val initialFilterRequest: StateFlow<FilterRequest?> = _initialFilterRequest
 
-    private val isGetFirstDataFilter = MutableStateFlow<Boolean>(true)
+    // Separate flags for first data loading
+    private val isGetFirstData = MutableStateFlow(true)
+    private val isGetFirstDataFilter = MutableStateFlow(true)
+
+    // Jobs for cancellation
+    private var challengesJob: Job? = null
+    private var filterJob: Job? = null
 
     init {
-        totalPage()
-        getAllChallenges()
-        _initialState.value = true
+        restartCounterPage()
     }
 
     fun getAllChallenges() {
-        Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 6")
-        if (_totalPage.value==0) _stateGetChallenges.value = StateGetChallenges.NULL
-        Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 7   counterPage.value : ${counterPage.value},  totalPage.value : ${totalPage.value}")
-
-        if (counterPage.value > totalPage.value) return
-
-        Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 8")
-
-        viewModelScope.launch {
-            Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 9")
-
-            _stateGetChallenges.value = StateGetChallenges.Loading
-            Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 10")
-
-            Log.d("getAllChallenges", " Loading Challenges for page ${counterPage.value}")
-
+        challengesJob?.cancel()
+        challengesJob = viewModelScope.launch {
             try {
-                Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 11")
+                Log.d(TAG_CHALLENGES, "Loading challenges - Page: ${_counterPage.value}")
 
-                val result = homeChallengesUseCase(page = counterPage.value)
-                Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 12")
+                if (_counterPage.value > _totalPage.value) {
+                    Log.d(TAG_CHALLENGES, "All pages loaded")
+                    _stateGetChallenges.value = GlobalState.SUCCESS
+                    return@launch
+                }
 
+                if (_stateGetChallenges.value != GlobalState.LOADING) {
+                    _stateGetChallenges.value = GlobalState.LOADING
+                }
 
-                when {
-                    result.isSuccessful && result.body().isNullOrEmpty() && counterPage.value == 1 -> {
-                        Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 13")
+                val result = homeChallengesUseCase(page = _counterPage.value)
 
-                        _stateGetChallenges.value = StateGetChallenges.NULL
-                        Log.d("getAllChallenges", " No posts found (page = 1)")
-                    }
+                if (result.isSuccessful && result.body() != null) {
+                    val body = result.body()!!
 
-                    result.isSuccessful && result.body() != null -> {
-                        Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 14")
+                    if (body.results.isNotEmpty()) {
+                        Log.d(TAG_CHALLENGES, "Success - Loaded ${body.results.size} challenges")
 
-                        val newPosts = result.body()!!
-                        Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 15")
-
-                        val uniquePosts = newPosts.filter { newItem ->
-                            Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 16")
-
-                            _challenges.value.none { it.challengeID == newItem.challengeID }
+                        // Set total pages only on first load
+                        if (isGetFirstData.value) {
+                            isGetFirstData.value = false
+                            _totalPage.value = body.totalPages
                         }
-                        Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 17")
 
-                        _challenges.value = _challenges.value + uniquePosts
-                        Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 18")
-
-                        _stateGetChallenges.value = StateGetChallenges.Success(data = _challenges.value)
-                        Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 19")
-
-                        _counterPage.value = counterPage.value + 1
-                        Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 20")
-
-                        Log.d("getAllChallenges", " Success: loaded ${uniquePosts.size} unique Challenges")
+                        // Add new challenges to existing list
+                        _challenges.value = _challenges.value + body.results
+                        _counterPage.value = _counterPage.value + 1
+                        _stateGetChallenges.value = GlobalState.SUCCESS
+                    } else {
+                        Log.d(TAG_CHALLENGES, "No more challenges available")
+                        _stateGetChallenges.value = GlobalState.EMPTY
                     }
-
-
-                    result.isSuccessful && result.body() == null -> {
-                        Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 21")
-
-                        _stateGetChallenges.value = StateGetChallenges.Failure(data = emptyList())
-                        Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 22")
-
-                        Log.w("getAllChallenges", " Response successful but body is null")
-                    }
-
-                    else -> {
-                        _stateGetChallenges.value = StateGetChallenges.Failure(data = emptyList())
-                        Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 23")
-
-                        Log.e("getAllChallenges", " Failed response: ${result.code()} - ${result.message()}")
-                    }
+                } else {
+                    Log.w(TAG_CHALLENGES, "Request failed or empty response")
+                    _stateGetChallenges.value = if (_challenges.value.isEmpty()) GlobalState.EMPTY else GlobalState.SUCCESS
                 }
 
             } catch (e: Exception) {
-                Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 24")
-
-                _stateGetChallenges.value = StateGetChallenges.Failure(data = emptyList())
-                Log.e("getAllChallenges", " Exception thrown: ${e.localizedMessage}", e)
+                Log.e(TAG_CHALLENGES, "Error loading challenges", e)
+                _stateGetChallenges.value = GlobalState.ERROR
             }
         }
     }
 
     fun restartCounterPage() {
-        viewModelScope.launch {
-            Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 1")
-            _stateGetChallenges.value = StateGetChallenges.Loading
+        challengesJob?.cancel()
+        challengesJob = viewModelScope.launch {
+            Log.d(TAG_CHALLENGES, "Restarting challenge loading")
 
-            _challenges.value = emptyList()
-            Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 2")
-
+            _stateGetChallenges.value = GlobalState.LOADING
             _counterPage.value = 1
             _totalPage.value = 1
-
-            totalPage()
-            Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 3")
-
-            Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 4")
+            _challenges.value = emptyList()
+            isGetFirstData.value = true
 
             getAllChallenges()
-
-            Log.d("getAllChallenges", " FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF 5")
-
+            _initialState.value = true
         }
     }
 
+    fun removeChallenge(challengeID: String) {
+        val initialSize = _challenges.value.size
+        _challenges.value = _challenges.value.filterNot { it.challengeId == challengeID }
 
-    fun totalPage(){
-
-        viewModelScope.launch {
-            try {
-
-                val totalPageResponse = homeChallengesUseCase.totalPage()
-
-                if (totalPageResponse.isSuccessful && totalPageResponse.body() != null && totalPageResponse.body()!! > 0) {
-                    _totalPage.value = totalPageResponse.body()!!
-                } else {
-                    _totalPage.value = 1
-                }
-
-
-            }catch (e: Exception){
-                _totalPage.value = 1
+        if (_challenges.value.size < initialSize) {
+            Log.d(TAG_CHALLENGES, "Challenge $challengeID removed")
+            if (_challenges.value.isEmpty()) {
+                _stateGetChallenges.value = GlobalState.EMPTY
             }
         }
     }
 
-    // Remove a challenge by its ID from the current list and update the state if the list becomes empty
-    fun removeChallenge(challengeID: String) {
-        _challenges.value = _challenges.value.filterNot { it.challengeID == challengeID }
-        if (_challenges.value.isEmpty()) {
-            _stateGetChallenges.value = StateGetChallenges.NULL
-        }
-    }
-
-    override fun updateChallenge(challengeID: String, challengeRequest: ChallengeRequest): Boolean {
+    override fun updateChallenge(challengeID: String, challengeDataUpdate: ChallengeDataUpdate): Boolean {
         var updated = false
 
-        fun updateItem(item: Challenge): Challenge {
-            return if (item.challengeID == challengeID) {
-                updated = true
-                item.copy(
-                    description = challengeRequest.descriptionPost,
-                    club = challengeRequest.club,
-                    whatsUpNumber = challengeRequest.whatsUpNumber,
-                    gender = challengeRequest.gender,
-                    team = challengeRequest.team,
-                    governorate = challengeRequest.governorate,
-                    city = challengeRequest.city,
-                )
-            } else {
-                item
+        _challenges.update { challenges ->
+            challenges.map { item ->
+                if (item.challengeId == challengeID) {
+                    updated = true
+                    item.copy(
+                        description = challengeDataUpdate.description,
+                        club = challengeDataUpdate.club,
+                        whatsUpNumber = challengeDataUpdate.whatsUpNumber,
+                        genderChallengeIndex = challengeDataUpdate.gender.index,
+                        team = challengeDataUpdate.team,
+                        governorate = challengeDataUpdate.governorate,
+                        city = challengeDataUpdate.city
+                    )
+                } else {
+                    item
+                }
             }
         }
 
-        _challengesFilter.update { challenges -> challenges.map(::updateItem) }
-        _challenges.update { challenges -> challenges.map(::updateItem) }
+        if (updated) {
+            Log.d(TAG_CHALLENGES, "Challenge $challengeID updated successfully")
+        }
 
         return updated
     }
 
+    fun setInitialFilter(filterRequest: FilterRequest) {
+        _isFilter.value = true
+        _initialFilterRequest.value = filterRequest
+        Log.d(TAG_FILTER, "Filter set: $filterRequest")
+        resetFilter()
+    }
 
-    fun resetFilter(){
-        viewModelScope.launch {
+    fun resetFilter() {
+        filterJob?.cancel()
+        filterJob = viewModelScope.launch {
+            Log.d(TAG_FILTER, "Resetting filter")
             _stateFilter.value = GlobalState.LOADING
             _currentPageFilter.value = 1
             _totalPageFilter.value = 1
             _challengesFilter.value = emptyList()
+            isGetFirstDataFilter.value = true
             filterChallenges()
         }
     }
 
-    fun discordFilter(){
-        viewModelScope.launch {
+    fun discardFilter() {
+        filterJob?.cancel()
+        filterJob = viewModelScope.launch {
+            Log.d(TAG_FILTER, "Discarding filter")
             _currentPageFilter.value = 1
             _totalPageFilter.value = 1
             _challengesFilter.value = emptyList()
             _isFilter.value = false
+            _initialFilterRequest.value = null
+            isGetFirstDataFilter.value = true
+            _stateFilter.value = GlobalState.IDLE
         }
     }
 
-    fun setInitialFilter(filterRequest: FilterRequest){
-        _isFilter.value = true
-        _initialFilterRequest.value = filterRequest
-        Log.d("Filter Challenge" , "${_initialFilterRequest.value}")
+    fun filterChallenges() {
+        val currentFilter = _initialFilterRequest.value
+        if (currentFilter == null) {
+            Log.w(TAG_FILTER, "No filter request available")
+            return
+        }
 
-        resetFilter()
-    }
-
-    fun filterChallenges(){
-        viewModelScope.launch {
-
+        filterJob?.cancel()
+        filterJob = viewModelScope.launch {
             try {
-                Log.d("Filter Challenge" , "Loading")
+                Log.d(TAG_FILTER, "Loading filtered challenges - Page: ${_currentPageFilter.value}")
+
                 if (_currentPageFilter.value > _totalPageFilter.value) {
+                    Log.d(TAG_FILTER, "All filter pages loaded")
                     _stateFilter.value = GlobalState.SUCCESS
                     return@launch
                 }
-                Log.d("Filter Challenge" , "Loading1")
 
-                if (_stateFilter.value != GlobalState.LOADING)
+                if (_stateFilter.value != GlobalState.LOADING) {
                     _stateFilter.value = GlobalState.LOADING
-
-                val result = homeChallengesUseCase.filterChallenge(page = currentPageFilter.value , filterRequest = _initialFilterRequest.value!!)
-                Log.d("Filter Challenge" , "Loading2")
-
-
-                if (result.isSuccessful && result.body() != null && result.body()!!.results.isNotEmpty()){
-
-                    Log.d("Filter Challenge" , "Success")
-
-                    if (!isGetFirstDataFilter.value){
-                        isGetFirstDataFilter.value = false
-                        _totalPageFilter.value = result.body()!!.totalPages
-                    }
-
-                    _challengesFilter.value = _challengesFilter.value + result.body()!!.results
-
-                    Log.d("Filter Challenge" , "Success , ${_challengesFilter.value}")
-
-                    _currentPageFilter.value = _currentPageFilter.value + 1
-
-                    _stateFilter.value = GlobalState.SUCCESS
-
-                }else{
-                    Log.d("Filter Challenge" , "Empty")
-
-                    _stateFilter.value = GlobalState.EMPTY
                 }
 
-            }catch (e: Exception){
-                Log.d("Filter Challenge" , "Error")
+                val result = homeChallengesUseCase.filterChallenge(
+                    page = _currentPageFilter.value,
+                    filterRequest = currentFilter
+                )
 
+                if (result.isSuccessful && result.body() != null) {
+                    val body = result.body()!!
+
+                    if (body.results.isNotEmpty()) {
+                        Log.d(TAG_FILTER, "Filter success - Loaded ${body.results.size} challenges")
+
+                        // Set total pages only on first load
+                        if (isGetFirstDataFilter.value) {
+                            isGetFirstDataFilter.value = false
+                            _totalPageFilter.value = body.totalPages
+                        }
+
+                        _challengesFilter.value = _challengesFilter.value + body.results
+                        _currentPageFilter.value = _currentPageFilter.value + 1
+                        _stateFilter.value = GlobalState.SUCCESS
+                    } else {
+                        Log.d(TAG_FILTER, "No more filtered challenges available")
+                        _stateFilter.value = GlobalState.EMPTY
+                    }
+                } else {
+                    Log.w(TAG_FILTER, "Filter request failed or empty response")
+                    _stateFilter.value = if (_challengesFilter.value.isEmpty()) GlobalState.EMPTY else GlobalState.SUCCESS
+                }
+
+            } catch (e: Exception) {
+                Log.e(TAG_FILTER, "Error filtering challenges", e)
                 _stateFilter.value = GlobalState.ERROR
             }
-
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        challengesJob?.cancel()
+        filterJob?.cancel()
+    }
+
+    companion object {
+        private const val TAG_CHALLENGES = "Challenges"
+        private const val TAG_FILTER = "Filter Challenge"
+    }
 }
