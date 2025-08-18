@@ -387,24 +387,34 @@ object ChangeLanguage {
 ## 📋 API Endpoints
 
 ### Authentication
-- `POST /auth/login` - User login
-- `POST /auth/register` - User registration
-- `POST /auth/verify-otp` - Verify OTP code
-- `POST /auth/reset-password` - Reset password
-- `POST /auth/logout` - User logout
+- `POST /login` - User login
+- `POST /register` - User registration
+- `POST /verify_code` - Verify OTP code
+- `POST reset_password` - Reset password
+- `POST /logout` - User logout
+
+### Token Management
+- `POST /generate_access_token` - Generete New Access Token Use Refresh Token
+- `POST /verify_access_token` - Verify Access Token
 
 ### Challenge Management
-- `GET /challenges` - Get all challenges
-- `POST /challenges` - Create new challenge
-- `GET /challenges/{id}` - Get challenge by ID
-- `PUT /challenges/{id}` - Update challenge
-- `DELETE /challenges/{id}` - Delete challenge
-- `GET /challenges/user` - Get user's challenges
+- `GET /challenges/total_page` - Get count total page
+- `GET /challenges/{page}` - Get all challenges
+- `POST /new_challenge` - Create new challenge
+- `GET /challenge/{postId}` - Get challenge by ID
+- `GET /challenges/total_page/{user_id}` - Get total count challenges specific user
+- `GET /challenges_user/{user_id}/{page}` - Get all challenges  specific user
+- `PUT /update_challenge/{postId}` - Update challenge
+- `DELETE /delete_challenge/{postID}` - Delete challenge
+- `GET /filter_challenges/{page}` - Filter Challenger
+
+### Location Services
+- `GET /governorates` - Get All Governorates
+- `GET /cities/{governorateId}` - Get Cities based on Governorates
 
 ### User Profile
-- `GET /user/profile` - Get user profile information
-- `GET /locations/cities` - Get cities list
-- `GET /locations/governorates` - Get governorates list
+- `GET /information_user/{user_id}` - Get user profile information
+
 
 ## 🎨 UI Components
 
