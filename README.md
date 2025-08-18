@@ -97,7 +97,6 @@ app/
 │   │   └── verify_otp/
 │   │       ├── VerifyOTPRequest.kt
 │   │       └── VerifyOTPResponse.kt
-│   ├── model/                      # Core Models
 │   │   ├── City.kt
 │   │   ├── EntryModel.kt
 │   │   ├── Gender.kt
@@ -250,7 +249,7 @@ app/
 
 ### Authentication Flow
 ```
-Splash Screen → OnBoarding → Login/Register → OTP Verification → Main App
+Splash Screen → OnBoarding → Login/Register → OTP Verification → Home Screen
 ```
 
 ### Challenge Management Flow
@@ -266,27 +265,28 @@ App Launch
 └── Authentication
     ├── Login
     │   ├── Enter Credentials
-    │   └── Success → Home
-    └── Register
-        ├── Enter User Info
-        ├── OTP Verification
-        └── Success → Home
+    │   └── Success → Home Screen
+    ├── Register
+    │   ├── Enter User Info
+    │   └── Success → Home Screen
+    ├── Forget Password
+    │   ├── Enter Email And Send OTP
+    │   ├── Verify OTP
+    │   ├── Create New Password
+    │   └── Success → Login Page
+
             
 Main Application
 ├── Home Page
 │   ├── Browse Challenges
 │   ├── Search & Filter
-│   └── Quick Actions
 ├── Challenge Management
-│   ├── My Challenges
 │   ├── Create New Challenge
 │   ├── Update Challenge
 │   └── Delete Challenge
-├── Profile Management
-│   ├── View Profile
-│   ├── Edit Information
-│   └── Settings
 └── Settings
+    ├── View Profile
+    ├── My Challenges
     ├── Language Selection
     ├── Privacy Policy
     └── Logout
@@ -324,8 +324,8 @@ Main Application
 - **Image Upload** support
 - **Category Filtering** and search
 
-### 3. User Profile
-- **Complete Profile** management
+### User Profile
+- **View Profile** information and details
 - **Location Services** (City/Governorate)
 - **Multi-language** preferences
 - **Privacy Settings**
@@ -342,8 +342,8 @@ Main Application
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/halawy50/sports-app.git
-   cd sports-app
+   git clone https://github.com/halawy50/Any-Challenger-App.git
+   cd Any-Challenger-App
    ```
 
 2. **Open in Android Studio**
@@ -402,8 +402,7 @@ object ChangeLanguage {
 - `GET /challenges/user` - Get user's challenges
 
 ### User Profile
-- `GET /user/profile` - Get user information
-- `PUT /user/profile` - Update user information
+- `GET /user/profile` - Get user profile information
 - `GET /locations/cities` - Get cities list
 - `GET /locations/governorates` - Get governorates list
 
@@ -504,7 +503,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For support and questions:
-1. Check the [Issues](https://github.com/halawy50/sports-app/issues) page
+1. Check the [Issues](https://github.com/halawy50/Any-Challenger-App/issues) page
 2. Create a new issue with detailed information
 3. Contact through GitHub profile
 
