@@ -197,8 +197,7 @@ app/
     │   ├── token_module/
     │   │   ├── RepositoryTokenModule.kt
     │   │   └── UseCaseTokenModule.kt
-    │   └── di/
-    │       └── NetworkModule.kt
+    │   └── NetworkModule.kt
     ├── navController/              # Navigation Controllers
     │   ├── AuthNavController.kt
     │   └── NavController.kt
@@ -209,23 +208,22 @@ app/
     │   │   ├── ResetPasswordPage.kt
     │   │   ├── SignUpPage.kt
     │   │   └── VerifyOTPPage.kt
-    │   ├── screens/
-    │   │   ├── ChangeLanguageScreen.kt
-    │   │   ├── main/
-    │   │   │   ├── MainScreen.kt
-    │   │   │   └── pages/
-    │   │   │       ├── HomePage.kt
-    │   │   │       ├── MessagePage.kt
-    │   │   │       └── setting_page/
-    │   │   │           ├── SettingPage.kt
-    │   │   │           └── page/
-    │   │   │               ├── AddNewChallengePage.kt
-    │   │   │               ├── ChallengesUserPage.kt
-    │   │   │               ├── InformationUserPage.kt
-    │   │   │               ├── LanguagePage.kt
-    │   │   │               ├── PrivacyPolicyPage.kt
-    │   │   │               └── UpdateChallengePage.kt
-    │   │   ├── onBoardingScreen/
+    │   ├── ChangeLanguageScreen.kt
+    │   ├── main/
+    │   │   ├── MainScreen.kt
+    │   │   └── pages/
+    │   │   │   ├── HomePage.kt
+    │   │   │   ├── MessagePage.kt
+    │   │   │   └── setting_page/
+    │   │   │       ├── SettingPage.kt
+    │   │   │       └── page/
+    │   │   │           ├── AddNewChallengePage.kt
+    │   │   │           ├── ChallengesUserPage.kt
+    │   │   │           ├── InformationUserPage.kt
+    │   │   │           ├── LanguagePage.kt
+    │   │   │           ├── PrivacyPolicyPage.kt
+    │   │   │           └── UpdateChallengePage.kt
+    │   ├── onBoardingScreen/
     │   │   │   └── OnBoardingScreen.kt
     │   │   └── splashScreen/
     │   │       └── SplashScreen.kt
