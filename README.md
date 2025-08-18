@@ -300,7 +300,7 @@ Main Application
 - **Architecture**: Clean Architecture + MVVM
 - **Dependency Injection**: Hilt/Dagger
 - **Navigation**: Compose Navigation
-- **State Management**: ViewModel + StateFlow/LiveData
+- **State Management**: ViewModel + StateFlowx
 - **Network**: Retrofit + OkHttp
 - **Local Storage**: SharedPreferences
 - **Async Operations**: Coroutines + Flow
