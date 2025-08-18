@@ -431,69 +431,11 @@ object ChangeLanguage {
 - **Challenge Screens**: Create, Update, View, My Challenges
 - **Utility Screens**: Onboarding, Splash, Language Selection
 
-## 🧪 Testing
-
-Run tests using:
-```bash
-./gradlew test
-```
-
-Run instrumentation tests:
-```bash
-./gradlew connectedAndroidTest
-```
-
-## 🏗️ Build Variants
-
-### Debug Build
-```bash
-./gradlew assembleDebug
-```
-
-### Release Build
-```bash
-./gradlew assembleRelease
-```
-
-## 📦 Deployment
-
-### Generate APK
-```bash
-./gradlew assembleRelease
-```
-
-### Generate AAB (Play Store)
-```bash
-./gradlew bundleRelease
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Code Style
-- Follow Kotlin coding conventions
-- Use meaningful variable names
-- Add comments for complex logic
-- Maintain Clean Architecture principles
-
-## 📱 Screenshots
-
-*Add screenshots of your app here showing key features*
-
 ## 🌐 Internationalization
 
 The app supports:
 - **Arabic (العربية)** - RTL layout support
 - **English** - Default language
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👨‍💻 Author
 
