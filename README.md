@@ -202,13 +202,14 @@ app/
     │   ├── AuthNavController.kt
     │   └── NavController.kt
     ├── screens/                    # Application Screens
+    │   ├── splashScreen.kt
+    │   ├── onBoardingScree.kt
     │   ├── authScreen/
     │   │   ├── ForgetPasswordPage.kt
     │   │   ├── LoginPage.kt
     │   │   ├── ResetPasswordPage.kt
     │   │   ├── SignUpPage.kt
     │   │   └── VerifyOTPPage.kt
-    │   ├── ChangeLanguageScreen.kt
     │   ├── main/
     │   │   ├── MainScreen.kt
     │   │   └── pages/
@@ -223,10 +224,6 @@ app/
     │   │   │           ├── LanguagePage.kt
     │   │   │           ├── PrivacyPolicyPage.kt
     │   │   │           └── UpdateChallengePage.kt
-    │   ├── onBoardingScreen/
-    │   │   │   └── OnBoardingScreen.kt
-    │   │   └── splashScreen/
-    │   │       └── SplashScreen.kt
     └── viewmodel/                  # ViewModels (MVVM)
         ├── AddNewChallengeViewModel.kt
         ├── ChallengesUserViewModel.kt
