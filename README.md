@@ -302,27 +302,25 @@ Main Application
 - **Navigation**: Compose Navigation
 - **State Management**: ViewModel + StateFlow/LiveData
 - **Network**: Retrofit + OkHttp
-- **Local Storage**: Room Database / SharedPreferences
+- **Local Storage**: SharedPreferences
 - **Async Operations**: Coroutines + Flow
 
 ### Backend
 - **Framework**: Ktor (Kotlin)
 - **API Documentation**: Available at the base URL
-- **Hosting**: Custom server deployment
+- **Hosting**: Heruko
 
 ## 📱 Key Features Implementation
 
 ### 1. Authentication System
 - **Login/Register** with email validation
-- **OTP Verification** for secure registration
 - **Password Reset** functionality
 - **Token Management** for session handling
 
 ### 2. Challenge Management
 - **CRUD Operations** for challenges
 - **Real-time Updates** using API calls
-- **Image Upload** support
-- **Category Filtering** and search
+- **Filtering**
 
 ### User Profile
 - **View Profile** information and details
